@@ -1,0 +1,67 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+<div class="buttons">
+  <div class="pull-right">
+    <input type="button" value="{{ button_confirm }}" id="button-confirm" class="btn btn-primary" />
+  </div>
+</div>
+
+<form style="display:none" name="payfort_payment_form" id="payfort_payment_form" method="post">
+    {% for key,  v in payment_request_params.params  %}
+        <input type="hidden" name="{{ key }}" value="{{ v }}">
+    {% endfor %}
+</form>
+
+<div class="pf-iframe-background" id="div-pf-iframe" style="display:none">
+    <div class="pf-iframe-container">
+        <span class="pf-close-container">
+            <i class="fa fa-times-circle pf-iframe-close" onclick="payfortFortMerchantPage.closePopup()"></i>
+        </span>
+        <i class="fa fa-spinner fa-spin pf-iframe-spin"></i>
+        <div class="pf-iframe" id="pf_iframe_content"></div>
+    </div>
+</div>
+<script type="text/javascript"><!--
+$('#button-confirm').bind('click', function () {
+    payfortFortMerchantPage.showMerchantPage("{{ payment_request_params.url }}");
+});
+//--></script>
+<style>
+.pf-iframe-background{
+    position: fixed;
+    z-index: 999;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    top: 0;
+    left: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 99999
+}
+.pf-iframe-container{
+    position: relative;
+    z-index: 99999999
+}
+iframe#payfort_merchant_page {
+    width:80% !important;
+    min-height:600px !important;
+}
+.pf-close-container{
+    display:block;
+    text-align:center;
+    margin:1em auto;
+}
+.pf-iframe-close{
+    font-size: 1.7em;
+    color: #fff;
+    cursor: pointer
+}
+.pf-iframe-spin{
+    font-size: 3em;
+    color: #fff;
+    display: block;
+    margin: 1em auto;
+    cursor: default
+}
+</style>
+
+<script type="text/javascript" src="catalog/view/javascript/payfort_fort/payfort_fort.js"/>

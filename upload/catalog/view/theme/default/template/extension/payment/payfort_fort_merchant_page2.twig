@@ -1,0 +1,65 @@
+<div id="payfort_fort_msg" class="alert alert-danger" style="display:none"></div>
+<form id="frm_payfort_fort_payment" class="payfort-fort-confirmation-form form-horizontal" method="POST" action="{{ payment_request_params.url}}">
+    <fieldset>
+        {% for key,  v in payment_request_params.params  %}
+            <input type="hidden" name="{{ key }}" value="{{ v }}">
+        {% endfor %}
+        <legend>{{ text_credit_card }}</legend>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="payfort_fort_card_holder_name">{{ text_card_holder_name }}</label>
+            <div class="col-sm-10">
+                <input type="text" id="payfort_fort_card_holder_name" name="card_holder_name" value="" placeholder="{{ text_card_holder_name }}" class="form-control" autocomplete="off" maxlength="50" />
+            </div>
+        </div>
+        <div class="form-group required">
+            <label class="col-sm-2 control-label" for="payfort_fort_card_number">{{ text_card_number }}</label>
+            <div class="col-sm-10">
+                <input type="text" id="payfort_fort_card_number" name="card_number" value="" placeholder="{{ text_card_number }}" class="form-control" autocomplete="off" maxlength="19" />
+            </div>
+        </div>
+        <div class="form-group required">
+            <label class="col-sm-2 control-label" for="payfort_fort_expiry_month">{{ text_expiry_date }}</label>
+            <div class="col-sm-3">
+                <select id="payfort_fort_expiry_month" class="form-control">
+                    {% for month in months %}
+                    <option value="{{ month.value }}">{{ month.value}}-{{month.text }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <select id="payfort_fort_expiry_year" class="form-control">
+                    {% for year in year_expire %}
+                    <option value="{{ year.value }}">{{ year.text }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <input type="hidden" id="payfort_fort_expiry" name="expiry_date"/>
+        </div>
+        <div class="form-group required">
+            <label class="col-sm-2 control-label" for="payfort_fort_card_security_code"><span data-toggle="tooltip" title="{{ help_cvc_code }}">{{ text_cvc_code }}</span></label>
+            <div class="col-sm-10">
+                <input type="text" id="payfort_fort_card_security_code" name="card_security_code" value="" placeholder="{{ text_cvc_code }}" class="form-control" autocomplete="off" size="3" maxlength="4"  />
+            </div>
+        </div>
+    </fieldset>
+</form>
+<div class="buttons">
+    <div class="pull-right">
+        <input type="button" value="{{ button_confirm }}" id="button-confirm" class="btn btn-primary" />
+    </div>
+</div>
+<script type="text/javascript"><!--
+    var arr_messages = [];
+    {{ arr_js_messages }}
+            //--></script>   
+<script type="text/javascript"><!--
+$('#button-confirm').bind('click', function () {
+        var isValid = payfortFortMerchantPage2.validateCcForm();
+        if (isValid) {
+            $('#frm_payfort_fort_payment').submit();
+        }
+    });
+//--></script>
+
+<script type="text/javascript" src="catalog/view/javascript/payfort_fort/jquery.creditCardValidator.js"/>
+<script type="text/javascript" src="catalog/view/javascript/payfort_fort/payfort_fort.js"/>
