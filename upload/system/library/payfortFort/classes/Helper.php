@@ -30,7 +30,7 @@ class Payfort_Fort_Helper
         * Get base currency from config
         * because when getting by currency value from DB it conflicts if 2 currencies have same value 1.00000000
         */
-        $basecurrency = $this->registry->get('config')->get('config_currency')
+        $basecurrency = $this->registry->get('config')->get('config_currency');
         //$query = $this->registry->get('db')->query("SELECT DISTINCT * FROM " . DB_PREFIX . "currency WHERE value = '1.00000000'");
 
         return $basecurrency ? trim($basecurrency) : '';
