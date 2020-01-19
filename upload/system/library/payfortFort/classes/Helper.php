@@ -99,7 +99,7 @@ class Payfort_Fort_Helper
             'LYD' => 3,
             'IQD' => 3,
             'IQD' => 3,
-            'CLF' => 0,
+            'CLF' => 4,
             'BIF' => 0,
             'DJF' => 0,
             'GNF' => 0, 
