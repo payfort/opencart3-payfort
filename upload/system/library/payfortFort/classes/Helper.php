@@ -77,7 +77,7 @@ class Payfort_Fort_Helper
             $new_amount = round($amount, $decimal_points);
         }
         $new_amount = $new_amount * (pow(10, $decimal_points));
-        return $new_amount;
+        return "$new_amount";
     }
 
     /**
