@@ -96,7 +96,9 @@
                                     <select name="payment_payfort_fort_entry_hash_algorithm" class="form-control">
                                         <option value="sha1" {{ payment_payfort_fort_entry_hash_algorithm == 'sha1' ? 'selected="selected"' : '' }} > {{text_sha1 }}</option>
                                         <option value="sha256" {{ payment_payfort_fort_entry_hash_algorithm == 'sha256' ? 'selected="selected"' : '' }} > {{text_sha256 }}</option>
-                                        <option value="sha512" {{ payment_payfort_fort_entry_hash_algorithm == 'sha512' ? 'selected="selected"' : '' }} > {{ text_sha512 }}</option>                                    
+                                        <option value="sha512" {{ payment_payfort_fort_entry_hash_algorithm == 'sha512' ? 'selected="selected"' : '' }} > {{ text_sha512 }}</option>
+                                        <option value="HMAC512" {{ payment_payfort_fort_entry_hash_algorithm == 'HMAC512' ? 'selected="selected"' : '' }} > {{ text_hmac512 }}</option>  
+                                        <option value="HMAC256" {{ payment_payfort_fort_entry_hash_algorithm == 'HMAC256' ? 'selected="selected"' : '' }} > {{ text_hmac256 }}</option>
                                     </select>
                                 </div>
                             </div>
