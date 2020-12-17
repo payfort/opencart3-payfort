@@ -71,3 +71,5 @@ $_['tab_credit_card'] = 'Credit \ Debit Card';
 $_['tab_installments'] = 'Installments';
 $_['tab_sadad'] = 'SADAD';
 $_['tab_naps'] = 'NAPS';
+$_['text_hmac512']        = 'HMAC-512';
+$_['text_hmac256']        = 'HMAC-256';
