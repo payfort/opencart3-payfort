@@ -26,9 +26,14 @@ class Payfort_Fort_Helper
     
     public function getBaseCurrency()
     {
-        $query = $this->registry->get('db')->query("SELECT DISTINCT * FROM " . DB_PREFIX . "currency WHERE value = '1.00000000'");
+        /**
+        * Get base currency from config
+        * because when getting by currency value from DB it conflicts if 2 currencies have same value 1.00000000
+        */
+        $basecurrency = $this->registry->get('config')->get('config_currency');
+        //$query = $this->registry->get('db')->query("SELECT DISTINCT * FROM " . DB_PREFIX . "currency WHERE value = '1.00000000'");
 
-        return isset($query->row["code"]) ? $query->row["code"] : '';
+        return $basecurrency ? trim($basecurrency) : '';
     }
 
     public function getFrontCurrency()
