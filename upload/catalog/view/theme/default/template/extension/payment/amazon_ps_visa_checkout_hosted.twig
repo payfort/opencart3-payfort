@@ -1,0 +1,107 @@
+<input type="hidden" id="aps_visa_checkout_status" name="aps_visa_checkout_status" value="" />
+<input type="hidden" id="visa_checkout_call_id" name="visa_checkout_call_id" value="" />
+<div class="buttons">
+  	<div class="pull-right">
+		<img id="visa_checkout_button" alt="Visa Checkout" class="v-button" role="button"src="{{params.button_link}}?cardBrands=VISA,MASTERCARD,DISCOVER,AMEX" />
+	</div>
+</div>
+
+<div class="aps-loader-background" id="div-aps-loader" style="display:none">
+    <div class="loader"></div>
+</div>
+
+<script type="text/javascript">
+	function onVisaCheckoutReady() {
+		V.init({
+			apikey : "{{params.api_key}}", // This will be provided by PayFort
+			externalProfileId : "{{params.profile_name}}", // This will be provided by PayFort
+			settings : {
+				locale : "{{params.language}}",
+				countryCode : "{{params.country_iso_code_2}}", // depends on ISO-3166-1 alpha-2 standard codes
+				review : {
+					message : "Make payment for {{params.merchant_message}}", //
+					buttonAction : "Continue" // The button label
+				},
+				threeDSSetup : {
+					threeDSActive : "false" // true to enable the 3ds false to disable it
+				}
+			},
+			paymentRequest : {
+				currencyCode : "{{params.currency}}", //depends on ISO 4217 standard alpha-3 code values
+				subtotal : {{params.amount}}, // Subtotal of the payment.
+				}
+		}); 
+		V.on("payment.success", function(payment) {
+			$('#visa_checkout_button').hide();
+			$( "#div-aps-loader" ).show();
+			if(payment.callid) {
+				document.getElementById("visa_checkout_call_id").value = payment.callid;
+				document.getElementById("aps_visa_checkout_status").value = 'success';
+				$.ajax({
+			        url: 'index.php?route=extension/payment/amazon_ps_visa_checkout/send',
+			        type: 'post',
+			        dataType: 'json', 
+			        data: { visa_checkout_call_id: payment.callid, aps_visa_checkout_status : "success"},
+			        beforeSend: function () {
+			        },
+			        complete: function (json) {		        
+			        },
+			        success: function (json) {
+				        if(json.success){
+				        	window.location.href =json.url;
+				        }else{
+				        	window.location.href ='index.php?route=checkout/checkout';
+				        }
+			        }
+			    });
+			}
+		});
+		V.on("payment.cancel", function(payment) {
+			window.location = 'index.php?route=extension/payment/amazon_ps/merchantPageCancel';
+		});
+		V.on("payment.error", function(payment, error) {
+			console.log(JSON.stringify(payment));
+			console.log(error);
+		});
+	}
+</script>
+<script type="text/javascript" src="{{params.js_link}}">
+</script>
+
+<style>
+.aps-loader-background{
+    position: fixed;
+    z-index: 999;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    top: 0;
+    left: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 99999
+}
+
+.loader {
+	position: relative;
+    left: 50%;
+    top: 50%;
+ 	border: 5px solid #f3f3f3;
+	border-radius: 50%;
+	border-top: 5px solid #555;
+	width: 50px;
+	height: 50px;
+	-webkit-animation: spin 2s linear infinite; /* Safari */
+	animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>

@@ -1,0 +1,583 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-payment" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-payment" class="form-horizontal">
+          <input type="hidden" name="payment_amazon_ps_card" value="1" />
+          <ul class="nav nav-tabs" id="tabs">
+            <li class="active"><a href="#tab-general" data-toggle="tab">{{ tab_general }}</a></li>
+            <li><a href="#tab-cc" data-toggle="tab">{{ tab_credit_card }}</a></li>
+            <li><a href="#tab-installments" data-toggle="tab">{{ tab_installments }}</a></li>
+            <li><a href="#tab-visa-checkout" data-toggle="tab">{{ tab_visa_checkout }}</a></li>
+            <li><a href="#tab-naps" data-toggle="tab">{{ tab_naps }}</a></li>
+            <li><a href="#tab-knet" data-toggle="tab">{{ tab_knet }}</a></li>
+            <li><a href="#tab-valu" data-toggle="tab">{{ tab_valu }}</a></li>
+            <li><a href="#tab-apple_pay" data-toggle="tab">{{ tab_apple_pay }}</a></li>
+            <li><a href="#tab-cron" data-toggle="tab">{{ tab_cron }}</a></li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active" id="tab-general">
+              <div class="form-group">
+              {% if amazon_ps_payment_method_required %}
+                <div class="alert alert-danger alert-dismissible">
+                   <i class="fa fa-exclamation-circle"></i> {{ amazon_ps_payment_method_required }}
+                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                </div>
+              {% endif %}
+              
+                <div>
+                  <h4 class="col-sm-12">{{label_merchant_config}}</h4>
+                 </div>                
+              </div>
+              <div class="form-group">
+                  <label class="col-sm-1 control-label"></label>
+                   <h4><a href="https://paymentservices.amazon.com/" target="_blank">{{ label_sign_up_url }}</a><h4>
+              </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_status }}</label>
+                  <div class="col-sm-10">
+                    <select name="payment_amazon_ps_status" id="input-status" class="form-control">
+                      <option value="1" {{ payment_amazon_ps_status ? 'selected="selected"' : ''  }}>{{ text_enabled }}</option>
+                      <option value="0" {{ not payment_amazon_ps_status ? 'selected="selected"' : ''  }}>{{ text_disabled }}</option>
+                    </select>
+                  </div>
+              </div>
+              <div class="form-group required">
+                  <label class="col-sm-2 control-label" for="">{{ entry_merchant_identifier }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" size ="50" name="payment_amazon_ps_merchant_identifier" value="{{ payment_amazon_ps_merchant_identifier }}" class="form-control" />
+                      {% if error_amazon_ps_merchant_identifier %}
+                      <span style="color:red">{{ error_amazon_ps_merchant_identifier }}</span>
+                      {% endif %}
+                  </div>
+              </div>
+
+              <div class="form-group required">
+                  <label class="col-sm-2 control-label" for="">{{ entry_access_code }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" size ="50" name="payment_amazon_ps_access_code" value="{{ payment_amazon_ps_access_code }}" class="form-control"/>
+                      {% if error_amazon_ps_access_code %}
+                      <span style="color:red">{{ error_amazon_ps_access_code }}</span>
+                      {% endif %}
+                  </div>
+              </div>
+
+              <div class="form-group required">
+                  <label class="col-sm-2 control-label" for="">{{ entry_request_sha_phrase }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" size ="50" name="payment_amazon_ps_request_sha_phrase" value="{{ payment_amazon_ps_request_sha_phrase }}" class="form-control"/>
+                      {% if error_amazon_ps_request_sha_phrase %}
+                      <span style="color:red">{{ error_amazon_ps_request_sha_phrase }}</span>
+                      {% endif %}
+                  </div>
+              </div>
+
+              <div class="form-group required">
+                  <label class="col-sm-2 control-label" for="">{{ entry_response_sha_phrase }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" size ="50" name="payment_amazon_ps_response_sha_phrase" value="{{ payment_amazon_ps_response_sha_phrase }}" class="form-control"/>
+                      {% if error_amazon_ps_response_sha_phrase %}
+                      <span style="color:red">{{ error_amazon_ps_response_sha_phrase }}</span>
+                      {% endif %}
+                  </div>
+              </div>
+              <div class="form-group"> 
+                <h4 class="col-sm-12">{{label_global_config}}</h4> 
+              </div>
+
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_sandbox }}</label>
+                  <div class="col-sm-10">
+                      <select name="payment_amazon_ps_sandbox_mode" id="input-status" class="form-control">
+                        <option value="1" {{ payment_amazon_ps_sandbox_mode ? 'selected="selected"' : ''  }}>{{ text_enabled }}</option>
+                        <option value="0" {{ not payment_amazon_ps_sandbox_mode ? 'selected="selected"' : ''  }}>{{ text_disabled }}</option>
+                      </select>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_command }}</label>
+                  <div class="col-sm-10">
+                      <select name="payment_amazon_ps_command" class="form-control">
+                          <option value="PURCHASE" {{ payment_amazon_ps_command == 'PURCHASE' ? 'selected="selected"' : '' }} > {{ text_purchase }}</option>
+                          <option value="AUTHORIZATION" {{ payment_amazon_ps_command == 'AUTHORIZATION' ? 'selected="selected"' : '' }} > {{ text_authorization }}</option>
+                      </select>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_sha_type }}</label>
+                  <div class="col-sm-10">
+                      <select name="payment_amazon_ps_sha_type" class="form-control">
+                          <option value="sha256" {{ payment_amazon_ps_sha_type == 'sha256' ? 'selected="selected"' : '' }} > {{text_sha256 }}</option>
+                          <option value="sha512" {{ payment_amazon_ps_sha_type == 'sha512' ? 'selected="selected"' : '' }} > {{ text_sha512 }}</option>
+                          <option value="hmac256" {{ payment_amazon_ps_sha_type == 'hmac256' ? 'selected="selected"' : '' }} > {{ text_hmac256 }}</option>
+                          <option value="hmac512" {{ payment_amazon_ps_sha_type == 'hmac512' ? 'selected="selected"' : '' }} > {{ text_hmac512 }}</option>
+                      </select>
+                  </div>
+              </div>
+
+
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for=""><span data-toggle="tooltip" title="{{ help_gateway_currency }}">{{ entry_gateway_currency }}</span></label>
+                  <div class="col-sm-10">
+                      <select name="payment_amazon_ps_gateway_currency" class="form-control">
+                          <option value="base" {{ payment_amazon_ps_gateway_currency == 'base' ? 'selected="selected"' : '' }} > {{ text_base_currency }}</option>
+                          <option value="front" {{ payment_amazon_ps_gateway_currency == 'front' ? 'selected="selected"' : '' }} > {{ text_front_currency }} </option>
+                      </select>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-debug"><span data-toggle="tooltip" title="{{ help_debug }}">{{ entry_debug }}</span></label>
+                  <div class="col-sm-10">
+                      <select name="payment_amazon_ps_debug" id="input-debug" class="form-control">
+                          <option value="1" {{ payment_amazon_ps_debug ? 'selected="selected"' : '' }} > {{ text_enabled }}</option>
+                          <option value="0" {{ not payment_amazon_ps_debug ? 'selected="selected"' : '' }} > {{ text_disabled }}</option>
+                      </select>
+                  </div>
+              </div>
+              
+             {# <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_order_status }}</label>
+                  <div class="col-sm-10">
+                      <select name="payment_amazon_ps_order_status_id" class="form-control">
+                          {% for order_status in order_statuses %}
+                          {% if order_status.order_status_id == payment_amazon_ps_order_status_id %}
+                          <option value="{{ order_status.order_status_id }}" selected="selected"> {{ order_status.name }}</option>
+                          {% else %}
+                          <option value="{{ order_status.order_status_id }}">{{ order_status.name }} </option>
+                          {% endif %}
+                          {% endfor %}
+                      </select>
+                  </div>
+              </div>
+              #}
+
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{label_host_to_host_url}}</label>
+                  <div class="col-sm-10">
+                      <input size="50" type="text" readonly="readonly" value="{{ host_to_host_url }}" class="form-control" readonly/>
+                  </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="">{{ entry_tokenization }}</label>
+                <div class="col-sm-10">
+                  <select name="payment_amazon_ps_cc_tokenization" class="form-control">
+                    <option value="1" {{ payment_amazon_ps_cc_tokenization ? 'selected="selected"' : ''  }} > {{ text_enabled }}</option>
+                    <option value="0" {{ not payment_amazon_ps_cc_tokenization ? 'selected="selected"' : '' }} > {{ text_disabled }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="">{{ entry_hide_delete_token }}</label>
+                <div class="col-sm-10">
+                  <select name="payment_amazon_ps_cc_hide_delete_token" class="form-control">
+                    <option value="1" {{ payment_amazon_ps_cc_hide_delete_token ? 'selected="selected"' : ''  }} > {{ text_enabled }}</option>
+                    <option value="0" {{ not payment_amazon_ps_cc_hide_delete_token ? 'selected="selected"' : '' }} > {{ text_disabled }}</option>
+                  </select>
+                </div>
+              </div>
+          </div>
+            <div class="tab-pane " id="tab-cc">
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_status }}</label>
+                  <div class="col-sm-10">
+                      <select name="payment_amazon_ps_cc_status" class="form-control">
+                          <option value="1" {{ payment_amazon_ps_cc_status ? 'selected="selected"' : ''  }} > {{ text_enabled }}</option>
+                          <option value="0" {{ not payment_amazon_ps_cc_status ? 'selected="selected"' : '' }} > {{ text_disabled }}</option>
+                      </select>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-cc-integration-type">{{ entry_integration_type }}</label>
+                  <div class="col-sm-10">
+                      <select name="payment_amazon_ps_cc_integration_type" id="input-icc-integration-type" class="form-control">
+                          <option value="redirection" {{ payment_amazon_ps_cc_integration_type == 'redirection' ? 'selected="selected"' : ''  }} > {{ text_redirection }}</option>
+                          <option value="standard_checkout" {{ payment_amazon_ps_cc_integration_type == 'standard_checkout' ? 'selected="selected"' : '' }} > {{ text_standard_checkout }} </option>
+                          <option value="hosted_checkout" {{ payment_amazon_ps_cc_integration_type == 'hosted_checkout' ? 'selected="selected"' : '' }} > {{ text_hosted_checkout }} </option>
+                      </select>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_show_mada_branding }}</label>
+                  <div class="col-sm-10">
+                      <select name="payment_amazon_ps_cc_show_mada_branding" class="form-control">
+                          <option value="1" {{ payment_amazon_ps_cc_show_mada_branding ? 'selected="selected"' : ''  }} > {{ text_enabled }}</option>
+                          <option value="0" {{ not payment_amazon_ps_cc_show_mada_branding ? 'selected="selected"' : '' }} > {{ text_disabled }}</option>
+                      </select>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_show_meeza_branding }}</label>
+                  <div class="col-sm-10">
+                      <select name="payment_amazon_ps_cc_show_meeza_branding" class="form-control">
+                          <option value="1" {{ payment_amazon_ps_cc_show_meeza_branding ? 'selected="selected"' : ''  }} > {{ text_enabled }}</option>
+                          <option value="0" {{ not payment_amazon_ps_cc_show_meeza_branding ? 'selected="selected"' : '' }} > {{ text_disabled }}</option>
+                      </select>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_mada_bins }}</label>
+                  <div class="col-sm-10">
+                    <textarea name="payment_amazon_ps_cc_mada_bins"  rows="5"  class="form-control">{{ payment_amazon_ps_cc_mada_bins }}</textarea>
+                    <span>{{help_bins_text}}</span>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_meeza_bins }}</label>
+                  <div class="col-sm-10">
+                      <textarea name="payment_amazon_ps_cc_meeza_bins"  rows="5"  class="form-control">{{ payment_amazon_ps_cc_meeza_bins }}</textarea>
+                      <span>{{help_bins_text}}</span>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_sort_order }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" name="payment_amazon_ps_cc_sort_order" value="{{ payment_amazon_ps_cc_sort_order }}" size="1" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="tab-pane" id="tab-visa-checkout">
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_status }}</label>
+                  <div class="col-sm-10">
+                      <select name="payment_amazon_ps_visa_checkout_status" class="form-control">
+                          <option value="1" {{ payment_amazon_ps_visa_checkout_status ? 'selected="selected"' : ''  }} > {{ text_enabled }}</option>
+                          <option value="0" {{ not payment_amazon_ps_visa_checkout_status ? 'selected="selected"' : '' }} > {{ text_disabled }}</option>
+                      </select>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-visa-checkout-integration-type">{{ entry_integration_type }}</label>
+                  <div class="col-sm-10">
+                      <select name="payment_amazon_ps_visa_checkout_integration_type" id="input-visa-checkot-integration-type" class="form-control">
+                          <option value="redirection" {{ payment_amazon_ps_visa_checkout_integration_type == 'redirection' ? 'selected="selected"' : ''  }} > {{ text_redirection }}</option>
+                          <option value="hosted_checkout" {{ payment_amazon_ps_visa_checkout_integration_type == 'hosted_checkout' ? 'selected="selected"' : '' }} > {{ text_hosted_checkout }} </option>
+                      </select>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_api_key }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" name="payment_amazon_ps_visa_checkout_api_key" value="{{ payment_amazon_ps_visa_checkout_api_key }}" size="1" class="form-control"/>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_profile_name }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" name="payment_amazon_ps_visa_checkout_profile_name" value="{{ payment_amazon_ps_visa_checkout_profile_name }}" size="1" class="form-control"/>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_sort_order }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" name="payment_amazon_ps_visa_checkout_sort_order" value="{{ payment_amazon_ps_visa_checkout_sort_order }}" size="1" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="tab-pane" id="tab-installments">
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_status }}</label>
+                  <div class="col-sm-10">
+                      <select name="payment_amazon_ps_installments_status" class="form-control">
+                          <option value="1" {{ payment_amazon_ps_installments_status ? 'selected="selected"' : ''  }} > {{ text_enabled }}</option>
+                          <option value="0" {{ not payment_amazon_ps_installments_status ? 'selected="selected"' : '' }} > {{ text_disabled }}</option>
+                      </select>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-installments-integration-type">{{ entry_integration_type }}</label>
+                  <div class="col-sm-10">
+                      <select name="payment_amazon_ps_installments_integration_type" id="input-installments-integration-type" class="form-control">
+                          <option value="redirection" {{ payment_amazon_ps_installments_integration_type == 'redirection' ? 'selected="selected"' : ''  }} > {{ text_redirection }}</option>
+                          <option value="standard_checkout" {{ payment_amazon_ps_installments_integration_type == 'standard_checkout' ? 'selected="selected"' : '' }} > {{ text_standard_checkout }} </option>
+                          <option value="hosted_checkout" {{ payment_amazon_ps_installments_integration_type == 'hosted_checkout' ? 'selected="selected"' : '' }} > {{ text_hosted_checkout }} </option>
+                          <option value="embedded_hosted_checkout" {{ payment_amazon_ps_installments_integration_type == 'embedded_hosted_checkout' ? 'selected="selected"' : '' }} > {{ text_embedded_hosted_checkout }} </option>
+                      </select>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_installments_sar_order_min_value }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" name="payment_amazon_ps_installments_order_sar_min_value" value="{{ payment_amazon_ps_installments_sar_order_min_value }}" size="1" class="form-control"/>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_installments_aed_order_min_value }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" name="payment_amazon_ps_installments_aed_order_min_value" value="{{ payment_amazon_ps_installments_aed_order_min_value }}" size="1" class="form-control"/>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_installments_egp_order_min_value }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" name="payment_amazon_ps_installments_egp_order_min_value" value="{{ payment_amazon_ps_installments_egp_order_min_value }}" size="1" class="form-control"/>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_installments_issuer_name }}</label>
+                  <div class="col-sm-10">
+                      <select name="payment_amazon_ps_installments_issuer_name" class="form-control">
+                        <option value="1" {{ payment_amazon_ps_installments_issuer_name ? 'selected="selected"' : ''  }} > {{ text_enabled }}</option>
+                        <option value="0" {{ not payment_amazon_ps_installments_issuer_name ? 'selected="selected"' : '' }} > {{ text_disabled }}</option>
+                      </select>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_installments_issuer_logo }}</label>
+                  <div class="col-sm-10">
+                      <select name="payment_amazon_ps_installments_issuer_logo" class="form-control">
+                        <option value="1" {{ payment_amazon_ps_installments_issuer_logo ? 'selected="selected"' : ''  }} > {{ text_enabled }}</option>
+                        <option value="0" {{ not payment_amazon_ps_installments_issuer_logo ? 'selected="selected"' : '' }} > {{ text_disabled }}</option>
+                      </select>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_sort_order }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" name="payment_amazon_ps_installments_sort_order" value="{{ payment_amazon_ps_installments_sort_order }}" size="1" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+
+            <div class="tab-pane " id="tab-naps">
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="">{{ entry_status }}</label>
+                <div class="col-sm-10">
+                    <select name="payment_amazon_ps_naps_status" class="form-control">
+                        <option value="1" {{ payment_amazon_ps_naps_status ? 'selected="selected"' : ''  }} > {{ text_enabled }}</option>
+                        <option value="0" {{ not payment_amazon_ps_naps_status ? 'selected="selected"' : '' }} > {{ text_disabled }}</option>
+                    </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="">{{ entry_sort_order }}</label>
+                <div class="col-sm-10">
+                    <input type="text" name="payment_amazon_ps_naps_sort_order" value="{{ payment_amazon_ps_naps_sort_order }}" size="1" class="form-control"/>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane " id="tab-knet">
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="">{{ entry_status }}</label>
+                <div class="col-sm-10">
+                    <select name="payment_amazon_ps_knet_status" class="form-control">
+                        <option value="1" {{ payment_amazon_ps_knet_status ? 'selected="selected"' : ''  }} > {{ text_enabled }}</option>
+                        <option value="0" {{ not payment_amazon_ps_knet_status ? 'selected="selected"' : '' }} > {{ text_disabled }}</option>
+                    </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="">{{ entry_sort_order }}</label>
+                <div class="col-sm-10">
+                    <input type="text" name="payment_amazon_ps_knet_sort_order" value="{{ payment_amazon_ps_knet_sort_order }}" size="1" class="form-control"/>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane " id="tab-valu">
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="">{{ entry_status }}</label>
+                <div class="col-sm-10">
+                    <select name="payment_amazon_ps_valu_status" class="form-control">
+                        <option value="1" {{ payment_amazon_ps_valu_status ? 'selected="selected"' : ''  }} > {{ text_enabled }}</option>
+                        <option value="0" {{ not payment_amazon_ps_valu_status ? 'selected="selected"' : '' }} > {{ text_disabled }}</option>
+                    </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="">{{ entry_valu_order_min_value }}</label>
+                <div class="col-sm-10">
+                    <input type="text" name="payment_amazon_ps_valu_order_min_value" value="{{ payment_amazon_ps_valu_order_min_value }}" size="1" class="form-control"/>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="">{{ entry_sort_order }}</label>
+                <div class="col-sm-10">
+                    <input type="text" name="payment_amazon_ps_valu_sort_order" value="{{ payment_amazon_ps_valu_sort_order }}" size="1" class="form-control"/>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane " id="tab-apple_pay">
+              <div class="form-group">
+                <label class="col-sm-1 control-label"></label>
+                 <h4>
+                    <a href="{{apple_pay_certificate_url}}" target="_blank">{{ text_upload_certificate }}</a>
+                <h4>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="">{{ entry_status }}</label>
+                <div class="col-sm-10">
+                    <select name="payment_amazon_ps_apple_pay_status" class="form-control">
+                        <option value="1" {{ payment_amazon_ps_apple_pay_status ? 'selected="selected"' : ''  }} > {{ text_enabled }}</option>
+                        <option value="0" {{ not payment_amazon_ps_apple_pay_status ? 'selected="selected"' : '' }} > {{ text_disabled }}</option>
+                    </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="">{{ entry_status_apple_pay_product_page }}</label>
+                <div class="col-sm-10">
+                    <select name="payment_amazon_ps_apple_pay_product_page" class="form-control">
+                        <option value="1" {{ payment_amazon_ps_apple_pay_product_page ? 'selected="selected"' : ''  }} > {{ text_enabled }}</option>
+                        <option value="0" {{ not payment_amazon_ps_apple_pay_product_page ? 'selected="selected"' : '' }} > {{ text_disabled }}</option>
+                    </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="">{{ entry_status_apple_pay_cart_page }}</label>
+                <div class="col-sm-10">
+                    <select name="payment_amazon_ps_apple_pay_cart_page" class="form-control">
+                        <option value="1" {{ payment_amazon_ps_apple_pay_cart_page ? 'selected="selected"' : ''  }} > {{ text_enabled }}</option>
+                        <option value="0" {{ not payment_amazon_ps_apple_pay_cart_page ? 'selected="selected"' : '' }} > {{ text_disabled }}</option>
+                    </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_sha_type }}</label>
+                  <div class="col-sm-10">
+                      <select name="payment_amazon_ps_apple_pay_sha_type" class="form-control">
+                          <option value="sha256" {{ payment_amazon_ps_apple_pay_sha_type == 'sha256' ? 'selected="selected"' : '' }} > {{text_sha256 }}</option>
+                          <option value="sha512" {{ payment_amazon_ps_apple_pay_sha_type == 'sha512' ? 'selected="selected"' : '' }} > {{ text_sha512 }}</option>
+                          <option value="hmac256" {{ payment_amazon_ps_apple_pay_sha_type == 'hmac256' ? 'selected="selected"' : '' }} > {{ text_hmac256 }}</option>
+                          <option value="hmac512" {{ payment_amazon_ps_apple_pay_sha_type == 'hmac512' ? 'selected="selected"' : '' }} > {{ text_hmac512 }}</option>
+                      </select>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_apple_pay_btn_type }}</label>
+                  <div class="col-sm-10">
+                      <select name="payment_amazon_ps_apple_pay_btn_type" class="form-control">
+                          {% for key,value in apple_pay_button_types %}
+                              <option value="{{key}}" {{ payment_amazon_ps_apple_pay_btn_type == key ? 'selected="selected"' : '' }}> {{value}}</option>
+                          {% endfor %}}
+                      </select>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_access_code }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" size ="50" name="payment_amazon_ps_apple_pay_access_code" value="{{ payment_amazon_ps_apple_pay_access_code }}" class="form-control"/>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_request_sha_phrase }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" size ="50" name="payment_amazon_ps_apple_pay_request_sha_phrase" value="{{ payment_amazon_ps_apple_pay_request_sha_phrase }}" class="form-control"/>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_response_sha_phrase }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" size ="50" name="payment_amazon_ps_apple_pay_response_sha_phrase" value="{{ payment_amazon_ps_apple_pay_response_sha_phrase }}" class="form-control"/>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_domain_name }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" size ="50" name="payment_amazon_ps_apple_pay_domain_name" value="{{ payment_amazon_ps_apple_pay_domain_name }}" class="form-control"/>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_display_name }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" size ="50" name="payment_amazon_ps_apple_pay_display_name" value="{{ payment_amazon_ps_apple_pay_display_name }}" class="form-control" maxlength="64"/>
+                      <span>{{help_display_name_text}}</span>
+                  </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="">{{ entry_supported_network }}</label>
+                <div class="col-sm-10"> {% for key, value in cards %}
+                  <div class="checkbox">
+                    <label> {% if key in payment_amazon_ps_apple_pay_supported_network %}
+                        <input type="checkbox" checked="checked" name="payment_amazon_ps_apple_pay_supported_network[]" value="{{ key }}" />
+                      {% else %}
+                        <input type="checkbox" name="payment_amazon_ps_apple_pay_supported_network[]" value="{{ key }}" />
+                      {% endif %}
+                        {{ value }} 
+                    </label>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="">{{ entry_production_key}}</label>
+                <div class="col-sm-10">
+                    <input type="text" name="payment_amazon_ps_apple_pay_production_key" value="{{ payment_amazon_ps_apple_pay_production_key }}" size="1" class="form-control"/>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="">{{ entry_sort_order }}</label>
+                <div class="col-sm-10">
+                    <input type="text" name="payment_amazon_ps_apple_pay_sort_order" value="{{ payment_amazon_ps_apple_pay_sort_order }}" size="1" class="form-control"/>
+                </div>
+              </div>
+            </div>
+
+            <div class="tab-pane " id="tab-cron">
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="">{{ entry_recurring_cron }}</label>
+                <div class="col-sm-10">
+                    <input type="text" readonly="readonly" name="cron_recurring_url" value="{{ cron_recurring_url }}" size="1" class="form-control"/>
+                    <span>{{help_recurring_cron}}</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="">{{ entry_check_status_cron }}</label>
+                <div class="col-sm-10">
+                    <input type="text" readonly="readonly" name="cron_check_status_url" value="{{ cron_check_status_url }}" size="1" class="form-control"/>
+                    <span>{{help_check_status_cron}}</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="">{{ entry_check_status_cron_duration }}</label>
+                <div class="col-sm-10">
+                    <select name="payment_amazon_ps_check_status_cron_duration" class="form-control">
+                          <option value="15" {{ payment_amazon_ps_check_status_cron_duration == '15' ? 'selected="selected"' : '' }} > {{text_15m }}</option>
+                          <option value="30" {{ payment_amazon_ps_check_status_cron_duration == '30' ? 'selected="selected"' : '' }} > {{ text_30m }}</option>
+                          <option value="45" {{ payment_amazon_ps_check_status_cron_duration == '45' ? 'selected="selected"' : '' }} > {{ text_45m }}</option>
+                          <option value="60" {{ payment_amazon_ps_check_status_cron_duration == '60' ? 'selected="selected"' : '' }} > {{ text_1h }}</option>
+                          <option value="120" {{ payment_amazon_ps_check_status_cron_duration == '120' ? 'selected="selected"' : '' }} > {{ text_2h }}</option>
+                      </select>
+                    <span>{{help_check_status_cron_duration}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{{ footer }}
