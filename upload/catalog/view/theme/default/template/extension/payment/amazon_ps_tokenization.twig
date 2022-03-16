@@ -1,0 +1,25 @@
+
+<div class="form-group token-box">
+	{% for token_row in tokens %}
+	<div class="radio aps_token_group">
+		<label class="aps_token_row">
+			<span class="aps-card-num">
+				<input type="radio" name="aps_payment_token_cc" class="aps-radio" value="{{token_row.token}}" data-cardbin="{{ token_row.extras.masking_card|slice(0, 6)|lower }}" data-cardtype="{{token_row.extras.card_type}}"/>
+				<img class="card-icon" src="{{tokenization_card_icons[token_row.extras.card_type]}}"/>	
+				<strong>{{ (token_row.extras.card_type == 'mada') ? token_row.extras.card_type|lower: token_row.extras.card_type|upper}} {{ token_row.extras.last4 }}</strong> 
+			</span>
+			<span class="aps-card-expiry">
+				{{text_exp}} {{ token_row.extras.expiry_month }}/{{ token_row.extras.expiry_year }}
+			</span>
+		</label>
+		<label class="aps_error aps_install_token_error"></label>
+	</div>
+	
+	{% endfor %}
+	<div class="radio" {{display_add_new_card}}>
+		<label>
+			<input type="radio" name="aps_payment_token_cc" class="aps_token_radio" value="" data-cardbin="" required checked /> 
+			{{add_new_card}}
+		</label>
+	</div>
+</div>

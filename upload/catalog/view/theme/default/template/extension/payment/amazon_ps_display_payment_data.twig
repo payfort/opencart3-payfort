@@ -1,0 +1,17 @@
+{% if title and order_data is not empty %}
+	<div class="aps_order_data">
+		<div>
+			<h2>{{title}} </h2>
+		</div>
+		<div>
+		{% for data in order_data %}
+			<h5> {{ data.label}} :  {{ data.value}} </h5>
+		{% endfor %}
+		</div>
+	</div>
+{% endif %}
+<script type="text/javascript"><!--
+$( document ).ready(function() {		
+		$(".aps_order_data").appendTo("#content");
+	});
+//--></script>
