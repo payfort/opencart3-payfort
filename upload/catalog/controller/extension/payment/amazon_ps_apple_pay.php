@@ -94,7 +94,7 @@ class ControllerExtensionPaymentAmazonPSApplePay extends Controller {
 				throw new \Exception( 'Apple pay url is invalid' );
 			}
 			$parse_apple = parse_url( $apple_url );
-			if ( ! isset( $parse_apple['scheme'] ) || ! in_array( $parse_apple['scheme'], array( 'http', 'https' ), true ) ) {
+			if ( ! isset( $parse_apple['scheme'] ) || ! in_array( $parse_apple['scheme'], array( 'https' ), true ) ) {
 				throw new \Exception( 'Apple pay url is invalid' );
 			}
 			echo $this->init_apple_pay_api( $apple_url );
@@ -125,7 +125,7 @@ class ControllerExtensionPaymentAmazonPSApplePay extends Controller {
 		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
 		curl_setopt( $ch, CURLOPT_POST, 1 );
 		curl_setopt( $ch, CURLOPT_POSTFIELDS, $data );
-
+		curl_setopt( $ch, CURLOPT_PROTOCOLS, CURLPROTO_HTTPS );
 		$response = curl_exec( $ch );
 		curl_close( $ch );
 		return $response;
