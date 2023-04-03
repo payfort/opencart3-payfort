@@ -761,18 +761,14 @@ class ModelExtensionPaymentAmazonPS extends Model {
         curl_setopt($ch, CURLOPT_USERAGENT, $useragent);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json;charset=UTF-8',
-                //'Accept: application/json, application/*+json',
-                //'Connection:keep-alive'
         ));
         curl_setopt($ch, CURLOPT_URL, $gatewayUrl);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_FAILONERROR, 1);
         curl_setopt($ch, CURLOPT_ENCODING, "compress, gzip");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); // allow redirects     
-        //curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); // return into a variable
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0); // DON'T allow redirects
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0); // The number of seconds to wait while trying to connect
-        //curl_setopt($ch, CURLOPT_TIMEOUT, Yii::app()->params['apiCallTimeout']); // timeout in seconds
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData));
 
         $response = curl_exec($ch);

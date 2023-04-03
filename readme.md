@@ -7,7 +7,7 @@ We know that payment processing is critical to your business. With this extensio
 
 
 ## Configuration and User Guide
-You can download the archive [file](/oc3_apsopencart_2.2.0.ocmod.zip) of the extension and easily install it via OpenCart admin screen (ocmod).
+You can download the archive [file](/oc3_apsopencart_2.2.1.ocmod.zip) of the extension and easily install it via OpenCart admin screen (ocmod).
 OpenCart Extension user guide is included in the repository [here](/Opencart%20Extension%20User%20Guide.pdf) 
    
 
@@ -37,6 +37,7 @@ OpenCart Extension user guide is included in the repository [here](/Opencart%20E
 
 | Extension Version | Release Notes |
 | :---: | :--- |
+| 2.2.1 |   * Curl hardening, url validation and follow redirect limitation | 
 | 2.2.0 |   * Installments are embedded in Debit/Credit Card payment option | 
 | 2.1.0 |   * ApplePay is activated in Product and Cart pages | 
 | 2.0.0 |   * Integrated payment options: MasterCard, Visa, AMEX, mada, Meeza, KNET, NAPS, Visa Checkout, ApplePay, valU <br/> * Tokenization is enabled for Debit/Credit Cards and Installments <br/> * Recurring is available via Subscription products <br/> * Partial/Full Refund, Single/Multiple Capture and Void events are manage in Opencart order management screen | 
