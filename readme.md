@@ -37,6 +37,7 @@ OpenCart Extension user guide is included in the repository [here](/Opencart%20E
 
 | Extension Version | Release Notes |
 | :---: | :--- |
+| 2.2.2 |   * Certificate upload hardening | 
 | 2.2.1 |   * Curl hardening, url validation and follow redirect limitation | 
 | 2.2.0 |   * Installments are embedded in Debit/Credit Card payment option | 
 | 2.1.0 |   * ApplePay is activated in Product and Cart pages | 
