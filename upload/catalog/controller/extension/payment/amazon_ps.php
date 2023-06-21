@@ -310,6 +310,62 @@ class ControllerExtensionPaymentAmazonPS extends Controller {
                             );
                         }
                     }
+                    if($payment_method == AmazonPSConstant::AMAZON_PS_PAYMENT_METHOD_VALU){
+                        $tenure = $this->aps_model->getAmazonPSMetaData($orderId, 'valu_active_tenure',true);
+                        $tenure_amount = $this->aps_model->getAmazonPSMetaData($orderId, 'valu_tenure_amount',true);
+                        $admin_fees = $this->aps_model->getAmazonPSMetaData($orderId, 'valu_tenure_interest',true);
+                        $down_payment = $this->aps_model->getAmazonPSMetaData( $orderId, 'valu_down_payment',true);
+                        if(empty($down_payment)) {
+                            if ($this->amazonpspaymentservices->getValuDownPaymentStatus()) {
+                                $down_payment = $this->amazonpspaymentservices->getValuDownPaymentValue();;
+                            }
+                        }
+
+                        $result['title'] =  $this->language->get('text_valu_details');
+                        if(isset($tenure)){
+                            $result['order_data'][] = array(
+                                'label' => $this->language->get('text_valu_installments_details'),
+                                'value' => intval($tenure_amount[0]['meta_value']/100).' '.$amazon_ps_data['currency']." per ".$this->language->get('text_valu_month')." For ".$tenure[0]['meta_value'].' '.$this->language->get('text_months') ,
+                            );
+                        }
+                        if(isset($admin_fees)){
+                            $result['order_data'][] = array(
+                                'label' => $this->language->get('text_valu_admin_fees'),
+                                'value' => intval($admin_fees[0]['meta_value']/100). ' '. $amazon_ps_data['currency'],
+                            );
+                        }
+                        if(isset($down_payment) && !empty($down_payment)){
+                            $result['order_data'][] = array(
+                                'label' => $this->language->get('text_valu_downpayment'),
+                                'value' => intval($down_payment[0]['meta_value']).' '. $amazon_ps_data['currency'],
+                            );
+                        }
+                        if(isset($amazon_ps_data['cashback_wallet_amount'])){
+                            $result['order_data'][] = array(
+                                'label' => $this->language->get('text_valu_cashback'),
+                                'value' => intval($amazon_ps_data['cashback_wallet_amount']/100).' '. $amazon_ps_data['currency'],
+                            );
+                        }
+                        if(isset($amazon_ps_data['wallet_amount'])){
+                            $result['order_data'][] = array(
+                                'label' => $this->language->get('text_valu_tou'),
+                                'value' => intval($amazon_ps_data['wallet_amount']/100).' '. $amazon_ps_data['currency'],
+                            );
+                        }
+                        if(isset($amazon_ps_data['valu_transaction_id'])){
+                            $result['order_data'][] = array(
+                                'label' => $this->language->get('text_valu_transaction_id'),
+                                'value' => $amazon_ps_data['valu_transaction_id'],
+                            );
+                        }
+                        if(isset($amazon_ps_data['loan_number'])){
+                            $result['order_data'][] = array(
+                                'label' => $this->language->get('text_valu_loan_number'),
+                                'value' => $amazon_ps_data['loan_number'],
+                            );
+                        }
+
+                    }
                     $order_data = $this->load->view('extension/payment/amazon_ps_display_payment_data', $result );
                             // Insert the tags before the closing <head> tag
                     $output = str_replace('</head>', $order_data . '</head>', $output);

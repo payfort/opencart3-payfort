@@ -10,7 +10,7 @@ class AmazonPSConstant {
     private $registry;
 
     //version
-    const AMAZON_PS_VERSION                         = '2.2.2';
+    const AMAZON_PS_VERSION                         = '2.3.0';
     //Payment methods
     const AMAZON_PS_PAYMENT_METHOD_CC               = 'amazon_ps';
     const AMAZON_PS_PAYMENT_METHOD_NAPS             = 'amazon_ps_naps';

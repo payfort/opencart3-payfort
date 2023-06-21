@@ -1,5 +1,31 @@
 <form id="frm_payfort_fort_payment" class="payfort-fort-confirmation-form form-horizontal" method="POST" action="">
 <section id="request_otp_sec" class="valu_form active">
+    {% if payment_amazon_ps_valu_down_payment_status  %}
+    <div class="valu_optional">
+        <div class="aps col-sm-4 aps-pad-none">
+            <span>{{enter_valu_downpayment}}</span>
+        </div>
+        <div class="aps col-sm-4 aps-pad-none">
+            <input type="text" value="{{ payment_amazon_ps_valu_down_payment_value }}" autocomplete="off" maxlength="19" id="valu_down" name="valu_down" class="input-text aps_valu_down_payment  onlynum" />
+        </div>
+    </div>
+    {% endif %}
+    <div class="valu_optional">
+        <div class="aps col-sm-4 aps-pad-none">
+            <span>{{enter_valu_tou}}</span>
+        </div>
+        <div class="aps col-sm-4 aps-pad-none">
+            <input type="text" value="0" autocomplete="off" maxlength="19" id="valu_tou" name="valu_tou" class="input-text aps_valu_tou onlynum" />
+        </div>
+    </div>
+    <div class="valu_optional">
+        <div class="aps col-sm-4 aps-pad-none">
+            <span>{{enter_valu_cashback}}</span>
+        </div>
+        <div class="aps col-sm-4 aps-pad-none">
+            <input type="text" value="0" autocomplete="off" maxlength="19" id="valu_cashback" name="valu_cashback" class="input-text aps_valu_cashback onlynum" />
+        </div>
+    </div>
     <div class="aps-row">
         <div class="aps col-sm-1 aps-pad-none">
             <span class="country_code">{{country_code}}</span>
@@ -21,11 +47,11 @@
         <div class="aps col-sm-9 aps-pad-none">
             <input type="password" class="form-control no-outline input-text aps_valu_otp" placeholder="{{text_field_otp}}" onKeyPress="return keyLimit(this,10)" autocomplete="off"/>
         </div>
-        <div class="buttons">
-            <div class="pull-right">
-                <button type="button" class="valu_otp_verify btn btn-primary">{{button_verify_otp}}</button>
-            </div>
-        </div>
+{#        <div class="buttons">#}
+{#            <div class="pull-right">#}
+{#                <button type="button" class="valu_otp_verify btn btn-primary">{{button_verify_otp}}</button>#}
+{#            </div>#}
+{#        </div>#}
     </div>
 </section>
 
@@ -33,6 +59,7 @@
     <input type="hidden" id="aps_active_tenure" name="active_tenure" />
     <input type="hidden" id="aps_tenure_amount" name="tenure_amount" />
     <input type="hidden" id="aps_tenure_interest" name="tenure_interest" />
+    <input type="hidden" id="aps_otp" name="otp" />
     <p id="aps_valu_otp_field" class="form-row">
         <div class="install-line">{{text_valu_select_plan}}</div>
         <div class="tenure">
@@ -312,5 +339,10 @@ label.aps_error {
 }
 .slick-arrow.slick-hidden {
     display: none;
+}
+
+.valu_optional{
+    width:100%;
+    display: grid;
 }
 </style>

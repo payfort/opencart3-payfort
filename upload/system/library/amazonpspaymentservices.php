@@ -50,6 +50,10 @@ class AmazonPSPaymentServices {
 	private $knet_status;
 	private $knet_sort_order;
 	private $valu_status;
+
+    private $valu_down_payment_status;
+
+    private $valu_down_payment_value;
 	private $valu_order_min_value;
 	private $valu_sort_order;
     private $apple_pay_status;
@@ -126,6 +130,8 @@ class AmazonPSPaymentServices {
 							'knet_status',
 							'knet_sort_order',
 							'valu_status',
+                            'valu_down_payment_status',
+                            'valu_down_payment_value',
 							'valu_order_min_value',
 							'valu_sort_order',
                             'apple_pay_status',
@@ -353,6 +359,16 @@ class AmazonPSPaymentServices {
         return $this->valu_status;
     }
 
+    public function getValuDownPaymentStatus()
+    {
+        return $this->valu_down_payment_status;
+    }
+
+    public function getValuDownPaymentValue()
+    {
+        return $this->valu_down_payment_value;
+    }
+
     public function getValuOrderMinValue()
     {
         return $this->valu_order_min_value;
@@ -538,6 +554,22 @@ class AmazonPSPaymentServices {
     public function isValuActive()
     {
         if ($this->valu_status) {
+            return true;
+        }
+        return false;
+    }
+
+    public function isValuDownPaymentActive()
+    {
+        if ($this->valu_down_payment_status) {
+            return true;
+        }
+        return false;
+    }
+
+    public function isValuDownPaymentValueActive()
+    {
+        if ($this->valu_down_payment_value) {
             return true;
         }
         return false;

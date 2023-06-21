@@ -734,7 +734,7 @@ class AmazonPSOrderPayment {
      *
      * @return array
      */
-    public function valu_verify_customer( $mobile_number ) {
+    public function valu_verify_customer( $mobile_number, $down_payment, $tou, $cashback ) {
         $this->language->load('extension/payment/amazon_ps');
 
         $status  = 'success';
@@ -764,6 +764,9 @@ class AmazonPSOrderPayment {
             if ( isset( $response['status'] ) && AmazonPSConstant::AMAZON_PS_VALU_CUSTOMER_VERIFY_SUCCESS_RESPONSE_CODE === $response['response_code'] ) {
                 $this->session->data['amazon_ps_valu']['reference_id']  = $reference_id;
                 $this->session->data['amazon_ps_valu']['mobile_number'] = $mobile_number;
+                $this->session->data['amazon_ps_valu']['down_payment'] = $down_payment;
+                $this->session->data['amazon_ps_valu']['tou'] = $tou;
+                $this->session->data['amazon_ps_valu']['cashback'] = $cashback;
             } elseif ( isset( $response['response_code'] ) && AmazonPSConstant::AMAZON_PS_VALU_CUSTOMER_VERIFY_FAILED_RESPONSE_CODE === $response['response_code'] ) {
                 $status  = 'error';
                 $message = isset( $response['response_message'] ) && ! empty( $response['response_message'] ) ? $this->language->get('customer_not_exist') : $valuapi_stop_message;
@@ -793,11 +796,16 @@ class AmazonPSOrderPayment {
      *
      * @return array
      */
-    public function valu_generate_otp( $mobile_number, $reference_id ) {
+    public function valu_generate_otp( $mobile_number, $reference_id, $down_payment, $tou, $cashback ) {
         $this->language->load('extension/payment/amazon_ps');
-
+        if($this->amazonpspaymentservices->getValuDownPaymentStatus()) {
+            if (empty($down_payment) || $down_payment == "") {
+                $down_payment = $this->amazonpspaymentservices->getValuDownPaymentValue();
+            }
+        }else{$down_payment=0;}
         $status  = 'success';
         $message = $this->language->get('otp_generated');
+        $tenure_html = '';
         try {
             $orderId                  = $this->getSessionOrderId();
             $order                    = $this->loadOrder($orderId);
@@ -816,7 +824,19 @@ class AmazonPSOrderPayment {
                 'amount'              => $this->amazonpspaymentservices->convertGatewayAmount($this->getOrderTotal($order), $this->getOrderCurrencyValue($order), $currency),
                 'currency'            => $currency,
                 'products'            => $products[0],
+                'total_downpayment'  =>intval($down_payment)*100,
+                'wallet_amount'       =>intval($tou)*100,
+                'cashback_wallet_amount' =>intval($cashback)*100,
+                "include_installments" =>"YES"
             );
+
+            if ($down_payment + $tou + $cashback > $this->amazonpspaymentservices->convertGatewayAmount($this->getOrderTotal($order), $this->getOrderCurrencyValue($order), $currency) / 100) {
+
+                $message = $this->language->get('error_downpayment_cashback_tou_amount');
+                $status = 'error';
+
+                throw new Exception( $message);
+            }
                      
             $signature = $this->amazonpspaymentservices->calculateSignature( $gatewayParams, 'request' );
             $gatewayParams['signature'] = $signature;
@@ -840,7 +860,7 @@ class AmazonPSOrderPayment {
 
                 $message  = sprintf($this->language->get('text_otp_sent_to_mobile'), $mobile_number);
                 $this->session->data['amazon_ps_valu']['order_id']       = $orderId;
-                $this->session->data['amazon_ps_valu']['transaction_id'] = $response['transaction_id'];
+                $this->session->data['amazon_ps_valu']['transaction_id'] = $response['merchant_order_id'];
             } else {
                 $status  = 'genotp_error';
                 $message = isset( $response['response_message'] ) && ! empty( $response['response_message'] ) ? $response['response_message'] : $valuapi_stop_message;
@@ -848,13 +868,36 @@ class AmazonPSOrderPayment {
                     unset( $this->session->data['amazon_ps_valu'] );
                 }
             }
+            if ( isset( $response['response_code'] ) && AmazonPSConstant::AMAZON_PS_VALU_OTP_GENERATE_SUCCESS_RESPONSE_CODE === $response['response_code'] ) {
+                //$this->session->data['amazon_ps_valu']['otp'] = $otp;
+                $status                          = 'success';
+                $message                         = $this->language->get('valu_otp_verified');
+                $tenure_html                     = "<div class='tenure_carousel'>";
+                if ( isset( $response['installment_detail']['plan_details'] ) ) {
+                    foreach ( $response['installment_detail']['plan_details'] as $key => $ten ) {
+                        $tenure_html .= "<div class='slide'>
+                                <div class='tenureBox' data-tenure='" . $ten['number_of_installments'] . "' data-tenure-amount='" . $ten['amount_per_month'] ."' data-tenure-admin-fee='" . $ten['fees_amount'] ."'>
+                                    <p class='tenure'>" . $ten['number_of_installments'] ." ".$this->language->get('text_months')."</p>
+                                    <p class='emi'><strong>" . ( number_format($ten['amount_per_month']/100,2,'.','') ) . "</strong> EGP/".$this->language->get('text_month')."</p>
+                                    <p class='admin_fees'><strong class='alert-success'>" .$this->language->get('Admin Fee')."</strong>"." ".( number_format($ten['fees_amount']/100,2,'.','') )."</p>
+
+                                </div>
+                            </div>";
+                    }
+                }
+                $tenure_html .= '</div>';
+            } else {
+                $status  = 'error';
+                $message = isset( $response['response_message'] ) && ! empty( $response['response_message'] ) ? $response['response_message'] : $valuapi_stop_message;
+            }
         } catch ( Exception $e ) {
             $status  = 'error';
-            $message = $this->language->get('technical_error');
+            //$message = $this->language->get('technical_error');
         }
         $response_arr = array(
             'status'  => $status,
             'message' => $message,
+            'tenure_html' => $tenure_html,
         );
         return $response_arr;
     }
@@ -899,27 +942,27 @@ class AmazonPSOrderPayment {
 
             $valuapi_stop_message = $this->language->get('valu_api_failed');
 
-            if ( isset( $response['response_code'] ) && AmazonPSConstant::AMAZON_PS_VALU_OTP_VERIFY_SUCCESS_RESPONSE_CODE === $response['response_code'] ) {
-                $this->session->data['amazon_ps_valu']['otp'] = $otp;
-                $status                          = 'success';
-                $message                         = $this->language->get('valu_otp_verified');
-                $tenure_html                     = "<div class='tenure_carousel'>";
-                if ( isset( $response['tenure']['TENURE_VM'] ) ) {
-                    foreach ( $response['tenure']['TENURE_VM'] as $key => $ten ) {
-                        $tenure_html .= "<div class='slide'>
-                                <div class='tenureBox' data-tenure='" . $ten['TENURE'] . "' data-tenure-amount='" . $ten['EMI'] . "' data-tenure-interest='" . $ten['InterestRate'] . "' >
-                                    <p class='tenure'>" . $ten['TENURE'] ." ".$this->language->get('text_months')."</p>
-                                    <p class='emi'><strong>" . ( $ten['EMI'] ) . "</strong> EGP/".$this->language->get('text_month')."</p>
-                                    <p class='int_rate'>" . $ten['InterestRate'] . "% ".$this->language->get('text_interest')."</p>
-                                </div>
-                            </div>";
-                    }
-                }
-                $tenure_html .= '</div>';
-            } else {
-                $status  = 'error';
-                $message = isset( $response['response_message'] ) && ! empty( $response['response_message'] ) ? $response['response_message'] : $valuapi_stop_message;
-            }
+//            if ( isset( $response['response_code'] ) && AmazonPSConstant::AMAZON_PS_VALU_OTP_VERIFY_SUCCESS_RESPONSE_CODE === $response['response_code'] ) {
+//                $this->session->data['amazon_ps_valu']['otp'] = $otp;
+//                $status                          = 'success';
+//                $message                         = $this->language->get('valu_otp_verified');
+//                $tenure_html                     = "<div class='tenure_carousel'>";
+//                if ( isset( $response['tenure']['TENURE_VM'] ) ) {
+//                    foreach ( $response['tenure']['TENURE_VM'] as $key => $ten ) {
+//                        $tenure_html .= "<div class='slide'>
+//                                <div class='tenureBox' data-tenure='" . $ten['TENURE'] . "' data-tenure-amount='" . $ten['EMI'] . "' data-tenure-interest='" . $ten['InterestRate'] . "' >
+//                                    <p class='tenure'>" . $ten['TENURE'] ." ".$this->language->get('text_months')."</p>
+//                                    <p class='emi'><strong>" . ( $ten['EMI'] ) . "</strong> EGP/".$this->language->get('text_month')."</p>
+//                                    <p class='int_rate'>" . $ten['InterestRate'] . "% ".$this->language->get('text_interest')."</p>
+//                                </div>
+//                            </div>";
+//                    }
+//                }
+//                $tenure_html .= '</div>';
+//            } else {
+//                $status  = 'error';
+//                $message = isset( $response['response_message'] ) && ! empty( $response['response_message'] ) ? $response['response_message'] : $valuapi_stop_message;
+//            }
         } catch ( Exception $e ) {
             $status  = 'error';
             $message = $this->language->get('technical_error');
@@ -936,11 +979,16 @@ class AmazonPSOrderPayment {
      *
      * @return array
      */
-    public function valu_execute_purchase( $mobile_number, $reference_id, $otp, $transaction_id , $active_tenure) {
+    public function valu_execute_purchase( $mobile_number, $reference_id, $otp, $transaction_id , $active_tenure, $down_payment, $tou, $cashback) {
         $this->language->load('extension/payment/amazon_ps');
         $status  = 'success';
         $message = '';
         $order   = '';
+        if($this->amazonpspaymentservices->getValuDownPaymentStatus()) {
+            if (empty($down_payment) || $down_payment == "") {
+                $down_payment = $this->amazonpspaymentservices->getValuDownPaymentValue();;
+            }
+        }else{$down_payment=0;}
         try {
 
             $orderId = $this->getSessionOrderId();
@@ -960,12 +1008,29 @@ class AmazonPSOrderPayment {
                 'currency'             => strtoupper( $currency ),
                 'otp'                  => $otp,
                 'tenure'               => $active_tenure,
-                'total_down_payment'   => 0,
+                'total_down_payment'   => intval($down_payment)*100,
+                'wallet_amount'        =>intval($tou)*100,
+                'cashback_wallet_amount' =>intval($cashback)*100,
                 'customer_code'        => $mobile_number,
                 'customer_email'       => $this->getOrderEmail($order),
                 'purchase_description' => 'Order' . $orderId,
                 'transaction_id'       => $transaction_id,
             );
+
+            if(empty($otp)){
+
+                $status  = 'error';
+                $message = $this->language->get('empty_otp');
+                throw new \Exception( $message );
+            }
+            if ($down_payment + $tou + $cashback > $this->amazonpspaymentservices->convertGatewayAmount($this->getOrderTotal($order), $this->getOrderCurrencyValue($order), $currency) / 100) {
+
+                $message = $this->language->get('error_downpayment_cashback_tou_amount');
+                $status = 'error';
+
+                throw new \Exception($message);
+
+            }
 
             $plugin_params  = $this->amazonpspaymentservices->plugin_params();
             $gatewayParams  = array_merge( $gatewayParams, $plugin_params );
@@ -1004,6 +1069,8 @@ class AmazonPSOrderPayment {
         return array(
             'status'  => $status,
             'message' => $message,
+            'valu_transaction_id'=>$response['valu_transaction_id'],
+            'loan_number'=>$response['loan_number']
         );
     }
 	
