@@ -35,6 +35,8 @@ $_['text_disabled']               = 'No';
 
 
 $_['entry_status']                = 'Enabled';
+$_['entry_down_payment_status']         = 'Down Payment Status';
+$_['entry_down_payment_value']         = 'Down Payment Value';
 $_['entry_merchant_identifier']   = 'Merchant Identifier';
 $_['entry_access_code']           = 'Access Code';
 $_['entry_request_sha_phrase']    = 'Request SHA Phrase';

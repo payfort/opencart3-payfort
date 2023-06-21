@@ -178,6 +178,11 @@ class ModelExtensionPaymentAmazonPS extends Model {
 			$tenure          = $this->getAmazonPSMetaValue( $orderId, 'valu_active_tenure');
 			$tenure_amount   = $this->getAmazonPSMetaValue( $orderId, 'valu_tenure_amount');
 			$tenure_interest = $this->getAmazonPSMetaValue( $orderId, 'valu_tenure_interest');
+            $down_payment = $this->getAmazonPSMetaValue( $orderId, 'valu_down_payment');
+            $tou = $this->getAmazonPSMetaValue( $orderId, 'valu_tou');
+            $cashback = $this->getAmazonPSMetaValue( $orderId, 'valu_cash_back');
+            $valu_transaction_id = $this->getAmazonPSMetaValue( $orderId, 'valu_transaction_id');
+            $loan_number         = $this->getAmazonPSMetaValue( $orderId, 'loan_number');
 			if ( ! empty( $tenure ) ) {
 				$data['order_extra_data'][] = array(
 					'label' => 'Tenure',
@@ -196,6 +201,36 @@ class ModelExtensionPaymentAmazonPS extends Model {
 					'value' => $tenure_interest . '%',
 				);
 			}
+            if ( ! empty( $down_payment ) ) {
+                $data['order_extra_data'][] = array(
+                    'label' => 'Down Payment',
+                    'value' => $down_payment . ' ' . $amazon_ps_data['currency'],
+                );
+            }
+            if ( ! empty( $tou ) ) {
+                $data['order_extra_data'][] = array(
+                    'label' => 'ToU',
+                    'value' => $tou . ' ' . $amazon_ps_data['currency'],
+                );
+            }
+            if ( ! empty( $cashback ) ) {
+                $data['order_extra_data'][] = array(
+                    'label' => 'Cash Back',
+                    'value' => $cashback . ' ' . $amazon_ps_data['currency'],
+                );
+            }
+            if ( ! empty( $valu_transaction_id ) ) {
+                $data['order_extra_data'][] = array(
+                    'label' => 'Transaction ID',
+                    'value' => $valu_transaction_id,
+                );
+            }
+            if ( ! empty( $loan_number ) ) {
+                $data['order_extra_data'][] = array(
+                    'label' => 'Loan number',
+                    'value' => $loan_number,
+                );
+            }
 		}
 
 		if ( isset( $amazon_ps_data['token_name'] ) && ! empty( $amazon_ps_data['token_name'] ) ) {
