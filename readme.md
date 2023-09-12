@@ -7,7 +7,7 @@ We know that payment processing is critical to your business. With this extensio
 
 
 ## Configuration and User Guide
-You can download the archive [file](/oc3_apsopencart_2.2.1.ocmod.zip) of the extension and easily install it via OpenCart admin screen (ocmod).
+You can download the archive [file](/oc3_apsopencart_2.3.0.ocmod.zip) of the extension and easily install it via OpenCart admin screen (ocmod).
 OpenCart Extension user guide is included in the repository [here](https://github.com/payfort/opencart3-payfort/wiki) 
    
 
