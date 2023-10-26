@@ -57,6 +57,17 @@ Follow the below instruction to access configuration page of APS Opencart extens
 - Click on edit icon 
 
 
+| Extension Version | Release Notes |
+| :---: | :--- |
+| 2.4.0 |   * New payment option: Tabby  |
+| 2.3.0 |   * valU changes: downpayment, ToU and Cashback amounts are included in checkout page  |
+| 2.2.2 |   * Certificate upload hardening | 
+| 2.2.1 |   * Curl hardening, url validation and follow redirect limitation | 
+| 2.2.0 |   * Installments are embedded in Debit/Credit Card payment option | 
+| 2.1.0 |   * ApplePay is activated in Product and Cart pages | 
+| 2.0.0 |   * Integrated payment options: MasterCard, Visa, AMEX, mada, Meeza, KNET, NAPS, Visa Checkout, ApplePay, valU <br/> * Tokenization is enabled for Debit/Credit Cards and Installments <br/> * Recurring is available via Subscription products <br/> * Partial/Full Refund, Single/Multiple Capture and Void events are manage in Opencart order management screen | 
+
+
 
 ## API Documentation
 This extension has been implemented by using following [API library](https://paymentservices-reference.payfort.com/docs/api/build/index.html)
