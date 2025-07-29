@@ -59,6 +59,7 @@ Follow the below instruction to access configuration page of APS Opencart extens
 
 | Extension Version | Release Notes |
 | :---: | :--- |
+| 2.5.0 |   * Use parametrized queries  |
 | 2.4.0 |   * New payment option: Tabby  |
 | 2.3.0 |   * valU changes: downpayment, ToU and Cashback amounts are included in checkout page  |
 | 2.2.2 |   * Certificate upload hardening | 
