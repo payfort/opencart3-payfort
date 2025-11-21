@@ -51,13 +51,13 @@ class ModelExtensionPaymentAmazonPSTokens extends Model {
     }
 
     public function insertOrUpdateGetId( $token, $customer_id ) {
-        $sql = "SELECT * FROM `" . DB_PREFIX . "amazon_ps_tokens` WHERE token='" . $this->db->escape($token) . "'";
-        $result = $this->db->query($sql);
+        $sql = "SELECT * FROM `" . DB_PREFIX . "amazon_ps_tokens` WHERE token = ?";
+        $result = $this->db->query($sql, [$this->db->escape($token)]);
         if ($result->num_rows > 0) {
           return (int) $result->row['ID'];
         } else {
             $insert = array(
-                'token' => $token
+                'token' => $this->db->escape($token)
             );
             $insertData = array();
             foreach ($insert as $key => $value) {
@@ -75,13 +75,13 @@ class ModelExtensionPaymentAmazonPSTokens extends Model {
     }
 
     public function updatePaymentMeta( $token_id, $meta_key, $meta_value ) {
-        $sql = "SELECT * FROM `" . DB_PREFIX . "amazon_ps_token_meta_data` WHERE token_id = " . $token_id . " and meta_key='" . $this->db->escape($meta_key) . "'";
-        $result = $this->db->query($sql);
+        $sql = "SELECT * FROM `" . DB_PREFIX . "amazon_ps_token_meta_data` WHERE token_id = ? and meta_key='" . $this->db->escape($meta_key) . "'";
+        $result = $this->db->query($sql, $this->db->escapse($token_id));
         if ($result->num_rows > 0) {
             $insert = array(
-                'token_id' => $token_id,
-                'meta_key' => $meta_key,
-                'meta_value' => $meta_value
+                'token_id' => $this->db->escape($token_id),
+                'meta_key' => $this->db->escape($meta_key),
+                'meta_value' => $this->db->escape($meta_value)
             );
             $insertData = array();
             foreach ($insert as $key => $value) {
@@ -95,9 +95,9 @@ class ModelExtensionPaymentAmazonPSTokens extends Model {
             $this->db->query("UPDATE `" . DB_PREFIX . "amazon_ps_token_meta_data` SET " . implode(',', $insertData) . " where ID = " . $result->row['ID']);
         } else {
             $insert = array(
-                'token_id' => $token_id,
-                'meta_key' => $meta_key,
-                'meta_value' => $meta_value
+                'token_id' => $this->db->escape($token_id),
+                'meta_key' => $this->db->escape($meta_key),
+                'meta_value' => $this->db->escape($meta_value)
             );
             $insertData = array();
             foreach ($insert as $key => $value) {
@@ -140,7 +140,7 @@ class ModelExtensionPaymentAmazonPSTokens extends Model {
     public function getTokenCardType($token){
         $token_tbl      = DB_PREFIX . 'amazon_ps_tokens';
         $token_meta_tbl = DB_PREFIX . 'amazon_ps_token_meta_data';
-        $query_sql      = "SELECT OTM.meta_value FROM " . $token_tbl . " as OT INNER JOIN " . $token_meta_tbl . " as OTM on OT.ID = OTM.token_id where OT.token ='".$token."' and OTM.meta_key = 'card_type' LIMIT 1";
+        $query_sql      = "SELECT OTM.meta_value FROM " . $token_tbl . " as OT INNER JOIN " . $token_meta_tbl . " as OTM on OT.ID = OTM.token_id where OT.token ='". $this->db->escape($token) ."' and OTM.meta_key = 'card_type' LIMIT 1";
         $result = $this->db->query($query_sql);
         if($result->num_rows){
             return $result->row['meta_value'];
@@ -163,7 +163,7 @@ class ModelExtensionPaymentAmazonPSTokens extends Model {
             $sql = "DELETE FROM `" . DB_PREFIX . "amazon_ps_tokens` WHERE token='" . $this->db->escape($token) . "' and customer_id = '".$this->db->escape($customer_id)."'";
             $result = $this->db->query($sql);
 
-            $sql = "DELETE FROM `" . DB_PREFIX . "amazon_ps_token_meta_data` WHERE token_id='" . $token_id . "'";
+            $sql = "DELETE FROM `" . DB_PREFIX . "amazon_ps_token_meta_data` WHERE token_id='" . $this->db->escape($token) . "'";
             $result = $this->db->query($sql);
         }
     }
