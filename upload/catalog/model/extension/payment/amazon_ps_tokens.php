@@ -76,7 +76,7 @@ class ModelExtensionPaymentAmazonPSTokens extends Model {
 
     public function updatePaymentMeta( $token_id, $meta_key, $meta_value ) {
         $sql = "SELECT * FROM `" . DB_PREFIX . "amazon_ps_token_meta_data` WHERE token_id = ? and meta_key='" . $this->db->escape($meta_key) . "'";
-        $result = $this->db->query($sql, $this->db->escapse($token_id));
+        $result = $this->db->query($sql, $this->db->escape($token_id));
         if ($result->num_rows > 0) {
             $insert = array(
                 'token_id' => $this->db->escape($token_id),
@@ -163,7 +163,7 @@ class ModelExtensionPaymentAmazonPSTokens extends Model {
             $sql = "DELETE FROM `" . DB_PREFIX . "amazon_ps_tokens` WHERE token='" . $this->db->escape($token) . "' and customer_id = '".$this->db->escape($customer_id)."'";
             $result = $this->db->query($sql);
 
-            $sql = "DELETE FROM `" . DB_PREFIX . "amazon_ps_token_meta_data` WHERE token_id='" . $this->db->escape($token) . "'";
+            $sql = "DELETE FROM `" . DB_PREFIX . "amazon_ps_token_meta_data` WHERE token_id='" . $this->db->escape($token_id) . "'";
             $result = $this->db->query($sql);
         }
     }
