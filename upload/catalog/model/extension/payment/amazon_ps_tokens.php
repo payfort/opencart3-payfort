@@ -163,7 +163,7 @@ class ModelExtensionPaymentAmazonPSTokens extends Model {
             $sql = "DELETE FROM `" . DB_PREFIX . "amazon_ps_tokens` WHERE token='" . $this->db->escape($token) . "' and customer_id = '".$this->db->escape($customer_id)."'";
             $result = $this->db->query($sql);
 
-            $sql = "DELETE FROM `" . DB_PREFIX . "amazon_ps_token_meta_data` WHERE token_id='" . $this->db->escape($token_id) . "'";
+            $sql = "DELETE FROM `" . DB_PREFIX . "amazon_ps_token_meta_data` WHERE token_id='" . $this->db->escape($token) . "'";
             $result = $this->db->query($sql);
         }
     }
