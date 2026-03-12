@@ -257,10 +257,8 @@ class AmazonPSOrderPayment {
                 $responseMessage = $this->language->get('error_invalid_signature');
                 $this->amazonpspaymentservices->log(sprintf('Invalid Signature. Calculated Signature: %1s, Response Signature: %2s', $signature, $responseSignature));
                 $this->amazonpspaymentservices->log('signature_type'.$signature_type);
-                // There is a problem in the response we got
-                $this->onHoldOrder( $order, $responseMessage );
+                // Do NOT modify order status for untrusted/unsigned requests
                 throw new Exception($responseMessage);
-                return true;
             }
            
             if ( AmazonPSConstant::AMAZON_PS_PAYMENT_CANCEL_RESPONSE_CODE === $responseCode ) {
@@ -1193,6 +1191,10 @@ class AmazonPSOrderPayment {
     public function onHoldOrder( $order, $reason ){
         $status = AmazonPSConstant::PENDING_ORDER_STATUS_ID;  //pending order
         if($this->getOrderStatusId($order) == $status) {
+            return true;
+        }
+        // Don't put on-hold if already payment success
+        if ( in_array($this->getOrderStatusId($order), [AmazonPSConstant::PROCESSING_ORDER_STATUS_ID, AmazonPSConstant::SHIPPED_ORDER_STATUS_ID, AmazonPSConstant::COMPLETE_ORDER_STATUS_ID, AmazonPSConstant::PROCESSED_ORDER_STATUS_ID, AmazonPSConstant::REFUNDED_ORDER_STATUS_ID]) ) {
             return true;
         }
         if($this->getOrderId($order)) {
