@@ -658,6 +658,10 @@ class AmazonPSPaymentServices {
         return $this->check_status_cron_duration;
     }
 
+    public function getCronSecretKey(){
+        return $this->_getAPSConfig('cron_secret_key');
+    }
+
     public function getLogFileDir()
     {
         return $this->logFileDir;
@@ -740,6 +744,10 @@ class AmazonPSPaymentServices {
             $signature = hash_hmac( 'sha256', $shaString, $hmac_key );
         } elseif ( 'hmac512' === $hash_algorithm ) {
             $signature = hash_hmac( 'sha512', $shaString, $hmac_key );
+        } else {
+            // No valid hash algorithm configured — return a value that can never match any real signature
+            $this->log('Invalid or missing SHA type configuration: ' . var_export($hash_algorithm, true), 'calculateSignature', true);
+            return '__INVALID_SIGNATURE_NO_ALGORITHM__';
         }
 
         return $signature;

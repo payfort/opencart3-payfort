@@ -210,6 +210,11 @@ class ControllerExtensionPaymentAmazonPS extends Controller {
 
     // for cron job to make recurring transaction
     public function recurring($order_recurring_id = 0){
+        // Validate cron secret key
+        if (!$this->validateCronKey()) {
+            return;
+        }
+
         $this->amazonpspaymentservices->log("recurringOrderTransaction recurring \n");
 
         /*$this->load->model('checkout/order');*/
@@ -223,10 +228,31 @@ class ControllerExtensionPaymentAmazonPS extends Controller {
      * cron job for check order payment status for pending order
      */
     public function checkPaymentStatus(){
+        // Validate cron secret key
+        if (!$this->validateCronKey()) {
+            return;
+        }
+
         $this->amazonpspaymentservices->log("checkPaymentStatus \n");
         foreach ($this->aps_model->getPaymentPendingOrders() as $order) {
             $this->amazonpsorderpayment->doCheckPaymentStatus($order);
         };
+    }
+
+    /**
+     * Validate the cron secret key from request parameters.
+     * Returns true if the key is valid, false otherwise (with 403 response).
+     */
+    private function validateCronKey() {
+        $cron_key = isset($this->request->get['cron_key']) ? $this->request->get['cron_key'] : '';
+        $expected_key = $this->amazonpspaymentservices->getCronSecretKey();
+
+        if (empty($expected_key) || empty($cron_key) || !hash_equals($expected_key, $cron_key)) {
+            $this->amazonpspaymentservices->log('Unauthorized cron access attempt. IP: ' . (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown'), 'validateCronKey', true);
+            header('HTTP/1.1 403 Forbidden');
+            exit;
+        }
+        return true;
     }
 
     private function _handleResponse($response_mode = 'online', $integration_type = AmazonPSConstant::AMAZON_PS_INTEGRATION_TYPE_REDIRECTION)
