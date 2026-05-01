@@ -240,6 +240,17 @@ class AmazonPSOrderPayment {
                 }
             }
 
+            // Reject apple_pay signature type if Apple Pay is not properly configured
+            if ('apple_pay' === $signature_type) {
+                if (!$this->amazonpspaymentservices->isApplePayActive() ||
+                    empty($this->amazonpspaymentservices->getApplePayShaType()) ||
+                    empty($this->amazonpspaymentservices->getApplePayResponseShaPhrase())) {
+                    $responseMessage = $this->language->get('error_invalid_signature');
+                    $this->amazonpspaymentservices->log('Apple Pay signature type requested but Apple Pay is not configured. Rejecting request.', 'handleAmazonPSResponse', true);
+                    throw new Exception($responseMessage);
+                }
+            }
+
             $responseSignature = $this->amazonpspaymentservices->calculateSignature($responseGatewayParams, 'response', $signature_type);
 
 
@@ -250,6 +261,13 @@ class AmazonPSOrderPayment {
                 $responseParams['merchant_reference'] = $orderId;       
                 $order = $this->loadOrder($orderId);
                 $paymentMethod = $this->getPaymentMethod($order);
+            }
+
+            // Reject if either signature is empty or null
+            if (empty($responseSignature) || empty($signature)) {
+                $responseMessage = $this->language->get('error_invalid_signature');
+                $this->amazonpspaymentservices->log('Empty signature detected. Calculated: ' . var_export($responseSignature, true) . ', Response: ' . var_export($signature, true), 'handleAmazonPSResponse', true);
+                throw new Exception($responseMessage);
             }
 
             // check the signature
