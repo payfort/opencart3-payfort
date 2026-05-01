@@ -658,6 +658,10 @@ class AmazonPSPaymentServices {
         return $this->check_status_cron_duration;
     }
 
+    public function getCronSecretKey(){
+        return $this->_getAPSConfig('cron_secret_key');
+    }
+
     public function getLogFileDir()
     {
         return $this->logFileDir;

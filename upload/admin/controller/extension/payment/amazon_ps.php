@@ -154,12 +154,19 @@ class ControllerExtensionPaymentAmazonPS extends Controller {
         $host_to_host_url = $url->link('extension/payment/amazon_ps/response', '', 'SSL');
         $data['host_to_host_url'] = $host_to_host_url;
 
-       
-        $cron_recurring_url = $url->link('extension/payment/amazon_ps/recurring', '', 'SSL');
+        // Generate cron secret key if not already set
+        $cron_secret_key = $this->config->get('payment_amazon_ps_cron_secret_key');
+        if (empty($cron_secret_key)) {
+            $cron_secret_key = bin2hex(random_bytes(16));
+            $this->load->model('setting/setting');
+            $this->model_setting_setting->editSetting('payment_amazon_ps_cron', array('payment_amazon_ps_cron_secret_key' => $cron_secret_key));
+        }
+
+        $cron_recurring_url = $url->link('extension/payment/amazon_ps/recurring', 'cron_key=' . $cron_secret_key, 'SSL');
         $data['cron_recurring_url'] = $cron_recurring_url;
 
         
-        $cron_check_status_url = $url->link('extension/payment/amazon_ps/checkPaymentStatus', '', 'SSL');
+        $cron_check_status_url = $url->link('extension/payment/amazon_ps/checkPaymentStatus', 'cron_key=' . $cron_secret_key, 'SSL');
         $data['cron_check_status_url'] = $cron_check_status_url;
 
         $apple_pay_certificate_url = $this->url->link('extension/payment/amazon_ps_apple_pay/certificate', 'user_token=' . $this->session->data['user_token'], true);
