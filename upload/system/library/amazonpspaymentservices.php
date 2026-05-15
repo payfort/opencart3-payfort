@@ -107,6 +107,8 @@ class AmazonPSPaymentServices {
 							'cc_integration_type',
 							'cc_show_mada_branding',
 							'cc_show_meeza_branding',
+						'cc_show_jaywan_branding',
+                            'cc_jaywan_bins',
                             'cc_mada_bins',
                             'cc_meeza_bins',
                             'cc_tokenization',
@@ -583,6 +585,14 @@ class AmazonPSPaymentServices {
         return false;
     }
 
+    public function isJaywanBranding()
+    {
+        if($this->cc_show_jaywan_branding){
+            return true;
+        }
+        return false;
+    }
+
     public function isMeezaBranding()
     {
         if($this->cc_show_meeza_branding){
@@ -961,6 +971,7 @@ class AmazonPSPaymentServices {
             'mastercard' => $mastercard_logo,
             'amex'       => $amex_logo,
             'meeza'      => $meeza_logo,
+            'jaywan'     => $image_directory . 'jaywan-logo.png',
         );
         return $card_icons;
     }

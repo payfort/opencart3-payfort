@@ -234,13 +234,19 @@ var APSValidation = {
 			// American Express
 			var amex_regex = new RegExp( '^3$|^3[47][0-9]{0,13}$' );
 			
+			// Jaywan
+			var jaywan_regex = new RegExp( '^(669010|669009|978450)' );
+			
 			//mada
 			var mada_regex = new RegExp( '/^' + mada_bins + '/', 'm' );
 			
 			//meeza
 			var meeza_regex = new RegExp( meeza_bins, 'gm' );
 			
-			if ( card_number.match( mada_regex ) ) {
+			if ( card_number.match( jaywan_regex ) ) {
+				card_type   = 'jaywan';
+				card_length = 16;
+			} else if ( card_number.match( mada_regex ) ) {
 				if ( has_recurring_products != '0') {
 					card_validity = false;
 					message       = APSValidation.translate('invalid_card');
