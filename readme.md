@@ -28,6 +28,7 @@ OpenCart Extension user guide is included in the repository [here](https://githu
    * valU
    * mada
    * Meeza
+   * Jaywan
    * KNET
    * NAPS
    * Apple Pay
@@ -59,6 +60,7 @@ Follow the below instruction to access configuration page of APS Opencart extens
 
 | Extension Version | Release Notes                                                                                                                                                                                                                                                                                                                                                     |
 |:-----------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|       2.5.5       | * New - Jaywan card brand support added to checkout <br/> * New - Jaywan BIN detection in client-side credit card validation <br/> * New - Jaywan support for installments payment option <br/> * New - Jaywan configurable options in admin settings                                                                                    |
 |       2.5.4       | * Fix - Input sanitization for installment parameters                                                                                                                                                                                                                                                                                                             |
 |       2.5.3       | * Fix - Recurring and check status cron jobs enhanced                                                                                                                                                                                                                                                                                                             |
 |       2.5.2       | * Fix - Apple Pay configuration check during signature calculation                                                                                                                                                                                                                                                                                                |
