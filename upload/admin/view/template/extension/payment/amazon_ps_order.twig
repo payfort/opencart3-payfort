@@ -77,9 +77,9 @@
 		<tbody>
 		  {% for transaction in transaction_history %}
 			  <tr>
-				<td class="text-left">{{ transaction['date_added'] }}</td>
-				<td class="text-left">{{ transaction['meta_key'] }}</td>
-				<td class="text-left">{{ transaction['meta_value'] }}</td>
+            <td class="text-left">{{ transaction['date_added']|e }}</td>
+			<td class="text-left">{{ transaction['meta_key']|e }}</td>
+			<td class="text-left">{{ transaction['meta_value']|e }}</td>
 			  </tr>
 		  {% endfor %}
 		</tbody>
@@ -98,8 +98,8 @@
   <tbody>
     {% for data in order_extra_data %}
       <tr>
-      <td class="text-left">{{ data['label'] }}</td>
-      <td class="text-left">{{ data['value'] }}</td>      
+      <td class="text-left">{{ data['label']|e }}</td>
+      <td class="text-left">{{ data['value']|e }}</td>      
       </tr>
     {% endfor %}
   </tbody>
