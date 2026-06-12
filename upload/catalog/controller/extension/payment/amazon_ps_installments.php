@@ -138,6 +138,14 @@ class ControllerExtensionPaymentAmazonPSInstallments extends Controller {
             $installment_interest    = filter_input( INPUT_POST, 'aps_installment_interest' );
             $installment_amount      = filter_input( INPUT_POST, 'aps_installment_amount' );
 
+            // Sanitize installment inputs to prevent stored XSS
+            $installment_plan_code       = preg_replace('/[^a-zA-Z0-9_\-]/', '', (string)$installment_plan_code);
+            $installment_issuer_code     = preg_replace('/[^a-zA-Z0-9_\-]/', '', (string)$installment_issuer_code);
+            $installment_confirmation_en = htmlspecialchars(strip_tags((string)$installment_confirmation_en), ENT_QUOTES, 'UTF-8');
+            $installment_confirmation_ar = htmlspecialchars(strip_tags((string)$installment_confirmation_ar), ENT_QUOTES, 'UTF-8');
+            $installment_interest        = (float)$installment_interest;
+            $installment_amount          = (float)$installment_amount;
+
             if ( isset( $this->request->post['aps_payment_token_cc'] ) && ! empty( $this->request->post['aps_payment_token_cc'] ) ) {
                 $extras['aps_payment_token'] = trim( $this->request->post['aps_payment_token_cc'], ' ' );
             }

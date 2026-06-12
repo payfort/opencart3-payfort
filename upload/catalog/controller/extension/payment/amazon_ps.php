@@ -153,6 +153,14 @@ class ControllerExtensionPaymentAmazonPS extends Controller {
         $em_installment_confirmation_ar = filter_input( INPUT_POST, 'aps_em_installment_confirmation_ar' );
         $em_installment_interest        = filter_input( INPUT_POST, 'aps_em_installment_interest' );
         $em_installment_amount          = filter_input( INPUT_POST, 'aps_em_installment_amount' );
+
+        // Sanitize installment inputs to prevent stored XSS
+        $em_installment_plan_code       = preg_replace('/[^a-zA-Z0-9_\-]/', '', (string)$em_installment_plan_code);
+        $em_installment_issuer_code     = preg_replace('/[^a-zA-Z0-9_\-]/', '', (string)$em_installment_issuer_code);
+        $em_installment_confirmation_en = htmlspecialchars(strip_tags((string)$em_installment_confirmation_en), ENT_QUOTES, 'UTF-8');
+        $em_installment_confirmation_ar = htmlspecialchars(strip_tags((string)$em_installment_confirmation_ar), ENT_QUOTES, 'UTF-8');
+        $em_installment_interest        = (float)$em_installment_interest;
+        $em_installment_amount          = (float)$em_installment_amount;
 		if ( ! empty( $em_installment_plan_code ) ) {
             $this->aps_model->updateAmazonPSMetaData($orderId, 'em_installment_plan_code', $em_installment_plan_code);
         }
