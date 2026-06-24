@@ -235,7 +235,7 @@ var APSValidation = {
 			var amex_regex = new RegExp( '^3$|^3[47][0-9]{0,13}$' );
 			
 			// Jaywan
-			var jaywan_regex = new RegExp( '^(669010|669009|978450)' );
+			var jaywan_regex = new RegExp( '^(' + jaywan_bins + ')' );
 			
 			//mada
 			var mada_regex = new RegExp( '/^' + mada_bins + '/', 'm' );
@@ -517,7 +517,7 @@ $( document.body ).on(
 		$( '#aps_installment_interest' ).val( '' );
 		$( '#aps_installment_amount' ).val( '' );
 		if ( cardnumber.length >= 15 ) {
-			card_bin = cardnumber.substring( 0,6 );
+			card_bin = cardnumber.substring( 0,8 );
 			$( '#div-aps-loader' ).show();
 			$.ajax(
 				{
@@ -696,7 +696,7 @@ $( document.body ).on(
 			$( '#aps_em_installment_interest' ).val( '' );
 			$( '#aps_em_installment_amount' ).val( '' );
 			if ( cardnumber.length >= 15 ) {
-				card_bin = cardnumber.substring( 0,6 );
+				card_bin = cardnumber.substring( 0,8 );
 				$( '#div-aps-loader' ).show();
 				$.ajax(
 					{
