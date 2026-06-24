@@ -70,6 +70,7 @@ class ControllerExtensionPaymentAmazonPSInstallments extends Controller {
             $data['card_inline_icon'] = $this->model_extension_payment_amazon_ps_installments->get_card_inline_icon();
             $data['mada_bins'] = $this->amazonpspaymentservices->getMadaBins();
             $data['meeza_bins'] = $this->amazonpspaymentservices->getMeezaBins();
+            $data['jaywan_bins'] = $this->amazonpspaymentservices->getJaywanBins();
         }
 
         $arr_js_messages =  array(
@@ -97,7 +98,7 @@ class ControllerExtensionPaymentAmazonPSInstallments extends Controller {
             $tokens = array_filter(
                 $tokens,
                 function( $token_row ) {
-                    if ( in_array( $token_row['extras']['card_type'], array( 'visa', 'mastercard'), true ) ) {
+                    if ( in_array( $token_row['extras']['card_type'], array( 'visa', 'mastercard', 'jaywan'), true ) ) {
                         return true;
                     } else {
                         return false;

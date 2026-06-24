@@ -73,6 +73,7 @@ class ControllerExtensionPaymentAmazonPS extends Controller {
             $data['card_inline_icon'] = $this->aps_model->get_card_inline_icon();
             $data['mada_bins'] = $this->amazonpspaymentservices->getMadaBins();
             $data['meeza_bins'] = $this->amazonpspaymentservices->getMeezaBins();
+            $data['jaywan_bins'] = $this->amazonpspaymentservices->getJaywanBins();
         }
         $arr_js_messages =  array(
             'invalid_card_length'      => $this->language->get('invalid_card_length'),

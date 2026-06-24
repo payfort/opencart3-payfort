@@ -85,6 +85,8 @@ class ControllerExtensionPaymentAmazonPS extends Controller {
 					'payment_amazon_ps_order_status_id',
 					'payment_amazon_ps_cc_status',
 					'payment_amazon_ps_cc_integration_type',
+					'payment_amazon_ps_cc_show_jaywan_branding',
+					'payment_amazon_ps_cc_jaywan_bins',
 					'payment_amazon_ps_cc_show_mada_branding',
 					'payment_amazon_ps_cc_show_meeza_branding',
 					'payment_amazon_ps_cc_mada_bins',
@@ -179,6 +181,8 @@ class ControllerExtensionPaymentAmazonPS extends Controller {
         $data['payment_amazon_ps_installments_egp_order_min_value'] = isset($data['payment_amazon_ps_installments_egp_order_min_value']) ? $data['payment_amazon_ps_installments_egp_order_min_value'] : 1000;
 
         $data['payment_amazon_ps_valu_order_min_value'] = isset($data['payment_amazon_ps_valu_order_min_value']) ? $data['payment_amazon_ps_valu_order_min_value'] : 500;
+
+        $data['payment_amazon_ps_cc_jaywan_bins'] = isset($data['payment_amazon_ps_cc_jaywan_bins']) ? $data['payment_amazon_ps_cc_jaywan_bins'] : AmazonPSConstant::JAYWAN_BINS;
 
         $data['payment_amazon_ps_cc_mada_bins'] = isset($data['payment_amazon_ps_cc_mada_bins']) ? $data['payment_amazon_ps_cc_mada_bins'] : AmazonPSConstant::MADA_BINS;
 

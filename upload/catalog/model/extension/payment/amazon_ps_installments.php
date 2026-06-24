@@ -32,9 +32,13 @@ class ModelExtensionPaymentAmazonPSInstallments extends Model {
 		$image_directory = 'catalog/view/theme/default/image/amazon_ps/';
 		$visa_logo       = $image_directory . 'visa-logo.png';
 		$mastercard_logo = $image_directory . 'mastercard-logo.png';
+		$jaywan_logo     = $image_directory . 'jaywan-logo.png';
 		
 		$icon_html .= '<img style="margin: 5px !important;"  src="' . $visa_logo . '" alt="visa" class="payment-icons" />';
 		$icon_html .= '<img style="margin: 5px !important;"  src="' . $mastercard_logo . '" alt="mastercard" class="payment-icons"/>';
+		if ( $this->amazonpspaymentservices->isJaywanBranding() ) {
+			$icon_html .= '<img style="margin: 5px !important;"  src="' . $jaywan_logo . '" alt="jaywan" class="payment-icons"/>';
+		}
 		return $icon_html;
 	}
 
@@ -43,9 +47,13 @@ class ModelExtensionPaymentAmazonPSInstallments extends Model {
 		$image_directory = 'catalog/view/theme/default/image/amazon_ps/';
 		$visa_logo       = $image_directory . 'visa-logo.png';
 		$mastercard_logo = $image_directory . 'mastercard-logo.png';
+		$jaywan_logo     = $image_directory . 'jaywan-logo.png';
 		
 		$icon_html .= '<img src="' . $visa_logo . '" alt="visa" class="card-visa card-icon" />';
 		$icon_html .= '<img src="' . $mastercard_logo . '" alt="mastercard" class="card-mastercard card-icon"/>';
+		if ( $this->amazonpspaymentservices->isJaywanBranding() ) {
+			$icon_html .= '<img src="' . $jaywan_logo . '" alt="jaywan" class="card-jaywan card-icon"/>';
+		}
 		return $icon_html;
 	}
 

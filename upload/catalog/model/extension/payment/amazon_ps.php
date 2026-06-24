@@ -36,6 +36,7 @@ class ModelExtensionPaymentAmazonPS extends Model {
 		$mastercard_logo = $image_directory . 'mastercard-logo.png';
 		$amex_logo       = $image_directory . 'amex-logo.png';
 		$meeza_logo      = $image_directory . 'meeza-logo.jpg';
+		$jaywan_logo     = $image_directory . 'jaywan-logo.png';
 		//Wrap icons
 		if ( $this->amazonpspaymentservices->isMadaBranding() ) {
 			$icon_html .= '<img style="margin: 5px !important;" src="' . $mada_logo . '" alt="mada" class="payment-icons" />';
@@ -43,6 +44,9 @@ class ModelExtensionPaymentAmazonPS extends Model {
 		$icon_html .= '<img style="margin: 5px !important;" src="' . $visa_logo . '" alt="visa" class="payment-icons" />';
 		$icon_html .= '<img style="margin: 5px !important;" src="' . $mastercard_logo . '" alt="mastercard" class="payment-icons"/>';
 		$icon_html .= '<img style="margin: 5px !important;" src="' . $amex_logo . '" alt="amex" class="payment-icons"/>';
+		if ( $this->amazonpspaymentservices->isJaywanBranding() ) {
+			$icon_html .= '<img style="margin: 5px !important;" src="' . $jaywan_logo . '" alt="jaywan" class="payment-icons"/>';
+		}
 		if ( $this->amazonpspaymentservices->isMeezaBranding() ) {
 			$icon_html .= '<img style="margin: 5px !important;" src="' . $meeza_logo . '" alt="meeza" class="payment-icons"/>';
 		}
@@ -58,6 +62,7 @@ class ModelExtensionPaymentAmazonPS extends Model {
 		$mastercard_logo = $image_directory . 'mastercard-logo.png';
 		$amex_logo       = $image_directory . 'amex-logo.png';
 		$meeza_logo      = $image_directory . 'meeza-logo.jpg';
+		$jaywan_logo     = $image_directory . 'jaywan-logo.png';
 		//Wrap icons
 		if ( $this->amazonpspaymentservices->isMadaBranding() ) {
 			$icon_html .= '<img src="' . $mada_logo . '" alt="mada" class="card-mada card-icon" />';
@@ -67,6 +72,9 @@ class ModelExtensionPaymentAmazonPS extends Model {
 		$icon_html .= '<img src="' . $amex_logo . '" alt="amex" class="card-amex card-icon"/>';
 		if ( $this->amazonpspaymentservices->isMeezaBranding() ) {
 			$icon_html .= '<img src="' . $meeza_logo . '" alt="meeza" class="card-meeza card-icon"/>';
+		}
+		if ( $this->amazonpspaymentservices->isJaywanBranding() ) {
+			$icon_html .= '<img src="' . $jaywan_logo . '" alt="jaywan" class="card-jaywan card-icon"/>';
 		}
 		$icon_html .= '';
 		return $icon_html;
