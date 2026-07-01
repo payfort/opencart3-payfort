@@ -107,6 +107,8 @@ class AmazonPSPaymentServices {
 							'cc_integration_type',
 							'cc_show_mada_branding',
 							'cc_show_meeza_branding',
+						'cc_show_jaywan_branding',
+                            'cc_jaywan_bins',
                             'cc_mada_bins',
                             'cc_meeza_bins',
                             'cc_tokenization',
@@ -204,6 +206,7 @@ class AmazonPSPaymentServices {
     public function getCommand($paymentMethod, $card_number = null, $card_type = null )
     {
         $mada_regex  = '/^' . $this->getMadaBins() . '/';
+        $jaywan_regex = '/^(' . $this->getJaywanBins() . ')/';
         $meeza_regex = '/^' . $this->getMeezaBins() . '/';
 
         $command            = $this->command;
@@ -217,11 +220,11 @@ class AmazonPSPaymentServices {
         }
         if ( 'AUTHORIZATION' === $command && AmazonPSConstant::AMAZON_PS_PAYMENT_METHOD_CC === $paymentMethod ) {
             if ( ! empty( $card_number ) ) {
-                if ( preg_match( $mada_regex, $card_number ) || preg_match( $meeza_regex, $card_number ) ) {
+                if ( preg_match( $mada_regex, $card_number ) || preg_match( $meeza_regex, $card_number ) || preg_match( $jaywan_regex, $card_number ) ) {
                     $command = 'PURCHASE';
                 }
             } elseif ( ! empty( $card_type ) ) {
-                if ( 'MADA' === $card_type || 'MEEZA' === $card_type ) {
+                if ( 'MADA' === $card_type || 'MEEZA' === $card_type || 'JAYWAN' === $card_type ) {
                     $command = 'PURCHASE';
                 }
             }
@@ -583,6 +586,14 @@ class AmazonPSPaymentServices {
         return false;
     }
 
+    public function isJaywanBranding()
+    {
+        if($this->cc_show_jaywan_branding){
+            return true;
+        }
+        return false;
+    }
+
     public function isMeezaBranding()
     {
         if($this->cc_show_meeza_branding){
@@ -652,6 +663,10 @@ class AmazonPSPaymentServices {
 
     public function getMeezaBins(){
         return $this->cc_meeza_bins;
+    }
+
+    public function getJaywanBins(){
+        return $this->cc_jaywan_bins;
     }
 
     public function getCheckStatusCronDuration(){
@@ -961,6 +976,7 @@ class AmazonPSPaymentServices {
             'mastercard' => $mastercard_logo,
             'amex'       => $amex_logo,
             'meeza'      => $meeza_logo,
+            'jaywan'     => $image_directory . 'jaywan-logo.png',
         );
         return $card_icons;
     }

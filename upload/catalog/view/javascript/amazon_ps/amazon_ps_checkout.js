@@ -234,13 +234,19 @@ var APSValidation = {
 			// American Express
 			var amex_regex = new RegExp( '^3$|^3[47][0-9]{0,13}$' );
 			
+			// Jaywan
+			var jaywan_regex = new RegExp( '^(' + jaywan_bins + ')' );
+			
 			//mada
 			var mada_regex = new RegExp( '/^' + mada_bins + '/', 'm' );
 			
 			//meeza
 			var meeza_regex = new RegExp( meeza_bins, 'gm' );
 			
-			if ( card_number.match( mada_regex ) ) {
+			if ( card_number.match( jaywan_regex ) ) {
+				card_type   = 'jaywan';
+				card_length = 16;
+			} else if ( card_number.match( mada_regex ) ) {
 				if ( has_recurring_products != '0') {
 					card_validity = false;
 					message       = APSValidation.translate('invalid_card');
@@ -511,7 +517,7 @@ $( document.body ).on(
 		$( '#aps_installment_interest' ).val( '' );
 		$( '#aps_installment_amount' ).val( '' );
 		if ( cardnumber.length >= 15 ) {
-			card_bin = cardnumber.substring( 0,6 );
+			card_bin = cardnumber.substring( 0,8 );
 			$( '#div-aps-loader' ).show();
 			$.ajax(
 				{
@@ -690,7 +696,7 @@ $( document.body ).on(
 			$( '#aps_em_installment_interest' ).val( '' );
 			$( '#aps_em_installment_amount' ).val( '' );
 			if ( cardnumber.length >= 15 ) {
-				card_bin = cardnumber.substring( 0,6 );
+				card_bin = cardnumber.substring( 0,8 );
 				$( '#div-aps-loader' ).show();
 				$.ajax(
 					{

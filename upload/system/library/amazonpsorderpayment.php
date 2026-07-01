@@ -525,13 +525,14 @@ class AmazonPSOrderPayment {
         $issuer_key = null;
         if ( ! empty( $issuer_data ) ) {
             foreach ( $issuer_data as $key => $row ) {
-                $card_regex  = '';
                 $issuer_bins = array_column( $row['bins'], 'bin' );
                 if ( ! empty( $issuer_bins ) ) {
-                    $card_regex = '/^' . implode( '|', $issuer_bins ) . '/';
-                    if ( preg_match( $card_regex, $card_bin ) ) {
-                        $issuer_key = $key;
-                        break;
+                    foreach ( $issuer_bins as $bin ) {
+                        $shorter = min( strlen( $bin ), strlen( $card_bin ) );
+                        if ( $shorter > 0 && substr( $bin, 0, $shorter ) === substr( $card_bin, 0, $shorter ) ) {
+                            $issuer_key = $key;
+                            break 2;
+                        }
                     }
                 }
             }

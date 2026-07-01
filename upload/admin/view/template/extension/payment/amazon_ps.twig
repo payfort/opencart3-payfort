@@ -222,6 +222,15 @@
                   </div>
               </div>
               <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_show_jaywan_branding }}</label>
+                  <div class="col-sm-10">
+                      <select name="payment_amazon_ps_cc_show_jaywan_branding" class="form-control">
+                          <option value="1" {{ payment_amazon_ps_cc_show_jaywan_branding ? 'selected="selected"' : ''  }} > {{ text_enabled }}</option>
+                          <option value="0" {{ not payment_amazon_ps_cc_show_jaywan_branding ? 'selected="selected"' : '' }} > {{ text_disabled }}</option>
+                      </select>
+                  </div>
+              </div>
+              <div class="form-group">
                   <label class="col-sm-2 control-label" for="">{{ entry_show_mada_branding }}</label>
                   <div class="col-sm-10">
                       <select name="payment_amazon_ps_cc_show_mada_branding" class="form-control">
@@ -237,6 +246,13 @@
                           <option value="1" {{ payment_amazon_ps_cc_show_meeza_branding ? 'selected="selected"' : ''  }} > {{ text_enabled }}</option>
                           <option value="0" {{ not payment_amazon_ps_cc_show_meeza_branding ? 'selected="selected"' : '' }} > {{ text_disabled }}</option>
                       </select>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="">{{ entry_jaywan_bins }}</label>
+                  <div class="col-sm-10">
+                    <textarea name="payment_amazon_ps_cc_jaywan_bins"  rows="3"  class="form-control">{{ payment_amazon_ps_cc_jaywan_bins }}</textarea>
+                    <span>{{help_bins_text}}</span>
                   </div>
               </div>
               <div class="form-group">
