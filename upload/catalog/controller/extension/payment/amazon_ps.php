@@ -138,7 +138,17 @@ class ControllerExtensionPaymentAmazonPS extends Controller {
         $extras = array();
 		
         if ( isset( $this->request->post['aps_payment_token_cc'] ) && ! empty( $this->request->post['aps_payment_token_cc'] ) ) {
-            $extras['aps_payment_token'] = trim( $this->request->post['aps_payment_token_cc'], ' ' );
+            $aps_payment_token = trim( $this->request->post['aps_payment_token_cc'], ' ' );
+            // Only allow a saved card that belongs to the logged-in customer
+            if ( ! $this->aps_token->verifyTokenCustomer( $aps_payment_token, $this->customer->getId() ) ) {
+                $this->amazonpspaymentservices->log( 'Rejected saved card token not owned by customer #' . (int) $this->customer->getId(), 'send', true );
+                $this->response->setOutput( json_encode( array(
+                    'error'         => true,
+                    'error_message' => $this->language->get('error_invalid_token'),
+                ) ) );
+                return;
+            }
+            $extras['aps_payment_token'] = $aps_payment_token;
         }
         if ( isset( $this->request->post['aps_payment_card_bin_cc'] ) && ! empty( $this->request->post['aps_payment_card_bin_cc'] ) ) {
             $extras['aps_card_bin'] = trim( $this->request->post['aps_payment_card_bin_cc'], ' ' );

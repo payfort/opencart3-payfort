@@ -393,6 +393,39 @@ var APSValidation = {
 	filterInput: function(user_input) {
 		user_input = $.trim(user_input);
 		return user_input.replace(/[^a-z0-9 ]/gi, '');
+	},
+	// Show a payment error where the shopper can actually see it.
+	// Falls back through the containers that exist across the different
+	// checkout templates, so the message is never silently dropped.
+	showPaymentError: function(message) {
+		if (!message) {
+			message = (typeof text_general_error !== 'undefined') ? text_general_error : '';
+		}
+		var alert_html = '<div class="alert alert-danger alert-dismissible aps_payment_error">' + message +
+			'<button type="button" class="close" data-dismiss="alert">&times;</button></div>';
+
+		$('.aps_payment_error').remove();
+
+		var $target = $('#installment_plans .plans');
+		if (!$target.length) {
+			$target = $('#em_installment_plans');
+		}
+		if (!$target.length) {
+			$target = $('.token-box');
+		}
+		if ($target.length) {
+			$target.first().append(alert_html);
+		} else if ($('#button-confirm').length) {
+			$('#button-confirm').closest('.buttons').before(alert_html);
+		} else {
+			alert(message);
+			return;
+		}
+
+		var $shown = $('.aps_payment_error').first();
+		if ($shown.length && $shown.offset()) {
+			$('html, body').animate({ scrollTop: $shown.offset().top - 50 }, 500);
+		}
 	}
 }
 var AmazonPSCall = {
@@ -446,8 +479,8 @@ var AmazonPSCall = {
 				}
 				var aps_input_token_cc        = APSValidation.filterInput($('input[name=aps_payment_token_cc]:checked').val());
 				var aps_input_saved_card_code = APSValidation.filterInput($('input[name=aps_saved_card_security_code]').val());
-				var aps_input_token_cc        = APSValidation.filterInput($('input[name=aps_payment_token_cc]:checked').data('cardbin'));
-				var fdama = `aps_payment_token_cc=${aps_input_token_cc}&aps_card_security_code=${aps_input_saved_card_code}&aps_payment_card_bin_cc=${aps_input_token_cc}`;
+				var aps_input_card_bin_cc     = APSValidation.filterInput($('input[name=aps_payment_token_cc]:checked').data('cardbin'));
+				var fdama = `aps_payment_token_cc=${encodeURIComponent(aps_input_token_cc)}&aps_card_security_code=${encodeURIComponent(aps_input_saved_card_code)}&aps_payment_card_bin_cc=${encodeURIComponent(aps_input_card_bin_cc)}`;
 
 			}
 			else{
@@ -469,8 +502,11 @@ var AmazonPSCall = {
 				success: function (json) {
 					json = JSON.parse(json);
 					if (json['error']) {
+						// re-enable the button the shopper actually clicked, otherwise
+						// checkout stays dead with no way to retry
+						$('#button-confirm').attr('disabled', false);
 						$('#button-payment-method').button('reset');
-						$('#installment_plans .plans').append('<div class="alert alert-danger alert-dismissible">' + json['error_message'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+						APSValidation.showPaymentError(json['error_message']);
 					}
 					else if (json) {
 						if('standard_checkout' == payment_integration_type){
