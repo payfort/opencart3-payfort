@@ -25,7 +25,17 @@ $('#button-confirm').bind('click', function () {
         },
         success: function (json) {
 
-            if (json['form']) {
+            $('.aps_payment_error').remove();
+
+            if (json['error']) {
+                var msg = json['error_message'] ? json['error_message'] : '{{ text_general_error }}';
+                $('<div class="alert alert-danger alert-dismissible aps_payment_error"></div>')
+                    .text(msg)
+                    .append('<button type="button" class="close" data-dismiss="alert">&times;</button>')
+                    .insertBefore($('#button-confirm').closest('.buttons'));
+            }
+
+            else if (json['form']) {
                 $('body').append(json['form']);
                 $('#frm_payfort_fort_payment input[type=submit]').click();
             }

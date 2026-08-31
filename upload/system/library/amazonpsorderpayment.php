@@ -388,7 +388,7 @@ class AmazonPSOrderPayment {
         }
 
         if ( isset( $apsParams['token_name'] ) && ! empty( $apsParams['token_name'] ) ) {
-            $card_type = $this->aps_token->getTokenCardType($apsParams['token_name']);
+            $card_type = $this->aps_token->getTokenCardType($apsParams['token_name'], isset($order['customer_id']) ? $order['customer_id'] : null);
                 if ( ! empty( $card_type ) ) {
                     $command = $this->amazonpspaymentservices->getCommand( $paymentMethod, null, strtoupper( $card_type ) );
                 }

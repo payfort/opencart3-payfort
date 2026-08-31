@@ -50,6 +50,7 @@ $_['error_invalid_expiry_date'] = "Invalid card expiry date.";
 $_['error_invalid_cvc_code'] = "Invalid CVV.";
 $_['error_invalid_cc_details'] = "Invalid credit card details, Please check you credit card details and try again.";
 $_['error_transaction_cancelled'] = 'Transaction Cancelled';
+$_['error_invalid_token'] = 'The selected saved card is not available. Please select a card again or enter your card details.';
 
 $_['help_cvc_code']        = 'You can find the code on the back of the card.';
 $_['customer_verfied']     = 'Customer Verfied';

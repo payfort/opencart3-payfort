@@ -51,7 +51,13 @@ class ModelExtensionPaymentAmazonPSTokens extends Model {
     }
 
     public function insertOrUpdateGetId( $token, $customer_id ) {
-        $sql = "SELECT * FROM `" . DB_PREFIX . "amazon_ps_tokens` WHERE token = '" . $this->db->escape($token) . "'";
+        $customer_id = (int) $customer_id;
+        // Never reuse a token row that belongs to another customer
+        if ( $customer_id <= 0 ) {
+            $this->amazonpspaymentservices->log('insertOrUpdateGetId called without a valid customer_id', 'insertOrUpdateGetId', true);
+            return 0;
+        }
+        $sql = "SELECT * FROM `" . DB_PREFIX . "amazon_ps_tokens` WHERE token = '" . $this->db->escape($token) . "' and customer_id = '" . $customer_id . "'";
         $result = $this->db->query($sql);
         if ($result->num_rows > 0) {
           return (int) $result->row['ID'];
@@ -137,10 +143,12 @@ class ModelExtensionPaymentAmazonPSTokens extends Model {
         return $tokens;
     }
 
-    public function getTokenCardType($token){
+    public function getTokenCardType($token, $customer_id = null){
         $token_tbl      = DB_PREFIX . 'amazon_ps_tokens';
         $token_meta_tbl = DB_PREFIX . 'amazon_ps_token_meta_data';
-        $query_sql      = "SELECT OTM.meta_value FROM " . $token_tbl . " as OT INNER JOIN " . $token_meta_tbl . " as OTM on OT.ID = OTM.token_id where OT.token ='". $this->db->escape($token) ."' and OTM.meta_key = 'card_type' LIMIT 1";
+        // when a customer is supplied, only read the card type from that customer's own token row
+        $customer_filter = ( null === $customer_id ) ? '' : " and OT.customer_id = '" . (int) $customer_id . "'";
+        $query_sql      = "SELECT OTM.meta_value FROM " . $token_tbl . " as OT INNER JOIN " . $token_meta_tbl . " as OTM on OT.ID = OTM.token_id where OT.token ='". $this->db->escape($token) ."'" . $customer_filter . " and OTM.meta_key = 'card_type' LIMIT 1";
         $result = $this->db->query($query_sql);
         if($result->num_rows){
             return $result->row['meta_value'];
@@ -160,10 +168,11 @@ class ModelExtensionPaymentAmazonPSTokens extends Model {
     public function deleteToken($token, $customer_id){
         $token_id = $this->verifyTokenCustomer($token, $customer_id);
         if($token_id){
-            $sql = "DELETE FROM `" . DB_PREFIX . "amazon_ps_tokens` WHERE token='" . $this->db->escape($token) . "' and customer_id = '".$this->db->escape($customer_id)."'";
+            $sql = "DELETE FROM `" . DB_PREFIX . "amazon_ps_tokens` WHERE ID = " . (int) $token_id;
             $result = $this->db->query($sql);
 
-            $sql = "DELETE FROM `" . DB_PREFIX . "amazon_ps_token_meta_data` WHERE token_id='" . $this->db->escape($token) . "'";
+            // meta rows are keyed by the numeric token row ID, not the token string
+            $sql = "DELETE FROM `" . DB_PREFIX . "amazon_ps_token_meta_data` WHERE token_id = " . (int) $token_id;
             $result = $this->db->query($sql);
         }
     }
